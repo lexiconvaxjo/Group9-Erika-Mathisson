@@ -1,0 +1,22 @@
+﻿<!-- login.html -->
+<h1>Login Page</h1>
+
+<p>{{ message }}</p>
+
+<div ng-controller="loginController as log">
+    <form class="form-horizontal" name="logInForm" method="post" novalidate>
+        <div class="form-group">
+            <label class="control-label col-xs-2">User name: </label>
+            <input ng-model="login.UserName" class="form-control" ng-minlength="4" ng-maxlength="25" ng-required="true" name="UserName" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Password: </label>
+            <input ng-model="login.Password" class="form-control" type="password" ng-minlength="4" ng-maxlength="25" ng-required="true" name="Password" />
+        </div>
+        <button type="submit" class="btn btn-success" ng-click="log.logInPerson()">Submit</button>
+        <button type="reset" class="btn btn-default" ng-click="log.reset()">Reset</button>
+    </form>
+    <font color="red"> {{statusMessage}} </font>
+</div>
+
+

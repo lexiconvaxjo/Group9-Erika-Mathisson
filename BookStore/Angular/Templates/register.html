@@ -1,0 +1,57 @@
+﻿<!-- register.html -->
+
+<h1>Register Page</h1>
+
+<p>{{ message }}</p>
+
+<div ng-controller="registerController as reg">
+    <form class="form-horizontal" name="registerForm" method="post" novalidate>
+        <div class="form-group">
+            <label class="control-label col-xs-2">User name: </label>
+            <input ng-model="person.UserName" class="form-control" ng-minlength="4" ng-maxlength="25" ng-required="true" name="UserName" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">First name: </label>
+            <input ng-model="person.FirstName" class="form-control" ng-minlength="4" ng-maxlength="25" ng-required="true" name="FirstName" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Last name: </label>
+            <input ng-model="person.LastName" class="form-control" ng-minlength="4" ng-maxlength="25" ng-required="true" name="LastName" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Password: </label>
+            <input ng-model="person.Password" class="form-control" type="password" ng-minlength="4" ng-maxlength="25" ng-required="true" name="Password" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Confirm password: </label>
+            <input ng-model="person.ConfirmPassword" class="form-control" type="password" ng-minlength="4" ng-maxlength="25" ng-required="true" name="ConfirmPassword" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Email: </label>
+            <input ng-model="person.Email" class="form-control" type="email" ng-minlength="7" ng-maxlength="30" ng-required="true" name="Email" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Address: </label>
+            <input ng-model="person.Address" class="form-control" ng-minlength="4" ng-maxlength="25" ng-required="true" name="Address" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">City: </label>
+            <input ng-model="person.City" class="form-control"  ng-minlength="4" ng-maxlength="25" ng-required="true" name="City" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Zip code: </label>
+            <input ng-model="person.ZipCode" class="form-control" ng-minlength="5" ng-maxlength="10" ng-required="true" name="ZipCode" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Phone number: </label>
+            <input ng-model="person.PhoneNumber" class="form-control" ng-minlength="9" ng-maxlength="15" ng-required="true" name="PhoneNumber" />
+        </div>
+        <button type="submit" class="btn btn-success" ng-click="reg.registerPerson()">Submit</button>
+        <button type="reset" class="btn btn-default">Reset</button>
+    </form>
+    <font color="red"> {{statusMessage}} </font>
+</div>
+
+
+
+
