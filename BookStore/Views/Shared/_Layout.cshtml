@@ -39,17 +39,18 @@
                     @*}*@
                     @*@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                     {*@
-                        <li ng-if="isLoggedIn && user === 'Admin'"><a href="#/handlePeople"><font color="green"><span class="glyphicon glyphicon-user"></span> Handle people</font></a></li>
+                        <li ng-if="isLoggedIn && role == 'Admin'"><a href="#/handlePeople"><font color="green"><span class="glyphicon glyphicon-user"></span> Handle people</font></a></li>
+                    
                     @*}*@                    
 
                     @*@if (!User.Identity.IsAuthenticated)
                     {*@
                         <li ng-if="!isLoggedIn"><a href="#/logIn"><font color="green"><span class="glyphicon glyphicon-log-in"></span> Login</font></a></li>
                     @*}*@
-                   
+
                     @*@if (User.IsInRole("Admin"))
                     {*@
-                        <li ng-if="user === 'Admin'"><a href="#/logIn"><font color="green"><span class="glyphicon glyphicon-log-in"></span> Admin</font></a></li>
+                        <li ng-if="role == 'Admin'"><a href="#/logIn"><font color="green"><span class="glyphicon glyphicon-log-in"></span> Admin</font></a></li>
                     @*}*@
                     @*@if (User.Identity.IsAuthenticated)
                     {*@
@@ -69,7 +70,7 @@
     </div>
 
 
-    <div class="container body-content">
+    <div class="container body-content">       
         @RenderBody()
         <hr />
         <footer>

@@ -1,4 +1,5 @@
 ﻿(function () {
+    "use strict";
 
     var app = angular.module('app', ['ngRoute']);
 
@@ -35,16 +36,20 @@
         var bookFactory = {};
         bookFactory.message = "";
         bookFactory.people = [];
+        // if user is logged in
         bookFactory.isAuthorized = false;
+        // what role the user has
         bookFactory.userRole = null;
 
-        // for checking if user is logged in
+        // for checking if user is logged in and what role the user has
         $http.post("/Person/IsLoggedIn").then(function (response) {
+            console.log(response.data)
             if (response.data.status === true) {
                 bookFactory.isAuthorized = true;
                 bookFactory.userRole = response.data.role;
+                console.log(bookFactory.userRole);
             }
-        })
+        });
 
         //function for register a person
         bookFactory.registerPerson = function (person) {
@@ -80,24 +85,29 @@
         bookFactory.logInPerson = function (logInPerson) {
             return $http.post('/Person/LogInPerson', logInPerson)
                 .success(function (data) {
-        //check if error message is returned, in that case sent it to the controller               
-        if (data.status === "Failure") {
-            bookFactory.message = "No data has been submitted, something went wrong!";
-        }
-            //person is logged in ok
-        else if (data.status === "Success") {
-            bookFactory.message = "Person logged in ok";
-            //$timeout(function () {
-                 bookFactory.isAuthorized = true;
-                bookFactory.userRole = data.role;
-            //});
-            $window.location.href = "#/";
-        }
-        else {
-            // model isn't valid set the error message/messages            
-            bookFactory.message = data;
-        }
-    })
+                    console.log(data)
+                    //check if error message is returned, in that case sent it to the controller               
+                    if (data.status === "Failure") {
+                        bookFactory.message = "No data has been submitted, something went wrong!";
+                    }
+                        //person is logged in ok
+                    else if (data.status === "Success") {
+                        bookFactory.message = "Person logged in ok";
+                        //$timeout(function () {
+                        // the user is logged in ok setting isAuthorized and what role the user has
+                        bookFactory.isAuthorized = true;
+                        bookFactory.userRole = data.role;
+                        console.log(data);
+                        console.log(bookFactory.userRole);
+                        //});
+                        // todo: redirect??
+                        $window.location.href = "#/";
+                    }
+                    else {
+                        // model isn't valid set the error message/messages            
+                        bookFactory.message = data;
+                    }
+                })
 .error(function () {
     console.log("Error");
 });
@@ -116,7 +126,7 @@
                 bookFactory.message = "Something went wrong...";
             });
         };
-        
+
         //function for getting a person with a specific id and returning it
         bookFactory.get = function (Id) {
             console.log("bookfactory get");
@@ -132,18 +142,48 @@
             }
         };
 
+        //function for editing an existing person
+        bookFactory.editPerson = function (person) {
+            return $http.post('/Person/EditPerson', person)
+            .success(function (data) {
+                //check if error message is returned, set it to the message property
+                //if (data.status === "EmailExists") {
+                //    bookFactory.message = "Email already exist, please re enter your information!";
+                //}
+                if (data.status === "Failure") {
+                    bookFactory.message = data.message;
+                }   
+                else {
+                    //find the person using id and update it
+                    for (var i in bookFactory.people) {
+                        if (bookFactory.people[i].Id == person.Id) {
+                            bookFactory.people[i] = person;                          
+                        }
+                    }
+                }
+            })
+            .error(function () {
+                console.log("Error");
+            });
+        };
+
         return bookFactory;
     });
 
     //  main controller with $scope injected
     app.controller('mainController', function ($scope, $rootScope, bookFactory) {
         $scope.message = 'This is the main page';
+
+        // checking and setting if user is logged in and what role the user has 
         $rootScope.$watch(function () {
             return bookFactory.isAuthorized;
         }, function (n, o) {
             if (n === true) {
+                //setting loggedIn and role to the user
                 $scope.isLoggedIn = true;
-                $scope.role = $rootScope.userRole;
+                $scope.role = bookFactory.userRole;
+                console.log($scope.role);
+                console.log($rootScope.userRole);
             }
         })
     });
@@ -176,26 +216,44 @@
         $scope.message = 'This is the handle people page!';
 
         //setting people
-        $scope.people = bookFactory.people;      
+        $scope.people = bookFactory.people;
+
+        $scope.showForm = false;
 
         //function for setting the array of people to the scope
-        bookFactory
-             .getPeople()
-         .then(function () {
-             $scope.people = bookFactory.people;
-
-         });
+        bookFactory.getPeople().then(function () {
+            $scope.people = bookFactory.people;
+        });
 
         //function for copying information about a specific person and paste the information to the form 
         this.edit = function (Id) {
             console.log("edit people in controller");
             console.log(bookFactory.people);
             console.log(Id);
-            $scope.person = angular.copy(bookFactory.get(Id));           
-            console.log($scope.person);          
+            $scope.person = angular.copy(bookFactory.get(Id));
+            $scope.showForm = true;
+            console.log($scope.person);
         };
 
-
+        //function for saving a person
+        this.savePerson = function savePerson(person) {
+            //getting person from scope
+            var person = $scope.person;
+            bookFactory
+                .editPerson(person)
+                .then(function () {
+                    //check if any message is returned and set it to the status scope
+                    if (bookFactory.message.length != 0) {
+                        $scope.statusmessage = bookFactory.message;
+                    }
+                    else {
+                        $scope.people = bookFactory.people;
+                        $scope.showForm = false;
+                        console.log(bookFactory.message);
+                    }
+                });
+            //  }
+        }
     });
 
     // controller for handling log in
@@ -210,10 +268,15 @@
             //call the log in function in factory
             bookFactory.logInPerson($scope.login)
             .then(function () {
+                // checking if the user is logged in 
                 if (bookFactory.isAuthorized) {
                     $timeout(function () {
+                        // setting that user is logged in
                         $rootScope.isAuthorized = true;
+                        console.log($rootScope.isAuthorized);
+                        // setting what role the user has
                         $rootScope.userRole = bookFactory.userRole;
+                        console.log($rootScope.userRole);
                         $rootScope.$apply();
                     }, 0);
                 }
@@ -226,8 +289,6 @@
                         $scope.statusMessage = bookFactory.message;
                     }
                 }
-                
-
             });
         };
 
@@ -236,6 +297,5 @@
             $scope.login = {};
             $scope.statusMessage = "";
         }
-
     });
 })();

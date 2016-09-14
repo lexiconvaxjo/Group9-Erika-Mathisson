@@ -23,7 +23,6 @@ namespace BookStore.Controllers
 
         }
 
-
         /// <summary>
         /// setting parameters
         /// </summary>
@@ -185,9 +184,94 @@ namespace BookStore.Controllers
                 return Json(message);
 
             }
+        }
 
-            //    return Json("NonValid");
+        /// <summary>
+        /// Action for editing a person
+        /// </summary>
+        /// <param name="user">the person whom should be edited</param>
+        /// <returns>Json</returns>
+        [HttpPost]
+        public async System.Threading.Tasks.Task<JsonResult> EditPerson(
+            [Bind(Include = "Id, UserName, FirstName, LastName, PassWord, ConfirmPassword, Email, Address, City, ZipCode, PhoneNumber, Admin")]
+            EditUserVIewModel user)
+        {
+             //check if the users password is empty in that case it shouldn't change, fetch the current password
+            //if (user.Password == null)
+            //{
+            //    var CurrentUser = await UserManager.FindByNameAsync(user.UserName);
+            //    user.Password = CurrentUser.PasswordHash;
+            //    user.ConfirmPassword = CurrentUser.PasswordHash;                
+            //}
 
+            //check if model is valid
+            if (ModelState.IsValid)
+            {
+                // var OldUser = await UserManager.FindByNameAsync(user.UserName);
+                var CurrentUser = await UserManager.FindByEmailAsync(user.Email);
+
+                //// email already exist and it doesn't belong to the person who should be edited, return error code
+                //if (CurrentUser != null && CurrentUser.Id != user.Id)
+                //{
+                //    return Json("EmailExists");
+                //}
+
+                //try to add the changes on the person to the database               
+
+                CurrentUser.FirstName = user.FirstName;
+                CurrentUser.LastName = user.LastName;
+                CurrentUser.Email = user.Email;
+                CurrentUser.Address = user.Address;
+                CurrentUser.City = user.City;
+                CurrentUser.ZipCode = user.ZipCode;
+                CurrentUser.PhoneNumber = user.PhoneNumber;
+
+                //try and save the user to database
+                var result = await UserManager.UpdateAsync(CurrentUser);
+
+                //the user was not saved ok               
+                if (!result.Succeeded)
+                {
+                    // retrieve information about what went wrong and send message to page
+                    string message = "";
+                    if (result.Errors != null)
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            message = message + error.ToString() + " ";
+                        }
+                    }
+                    return Json(new {status = "Failure", message = message });
+                }
+                else
+                {
+                    // fetch the registered user and assign a role
+                    var registeredUser = await UserManager.FindByNameAsync(user.UserName);
+                    string role = null;
+                    if (user.Admin == true)
+                    {
+                        await UserManager.AddToRoleAsync(registeredUser.Id, "Admin");
+                        role = "Admin";
+                    }
+                    else
+                    {
+                        await UserManager.AddToRoleAsync(registeredUser.Id, "User");
+                        role = "User";
+                    }
+ 
+                    return Json(new { status = "Success", role = role });
+                 //   return Json("Success");
+                }
+            }
+            else
+            {
+                var message = string.Join(" | ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+
+                return Json(new { status = "Failure", message = message });
+            }
+            
         }
 
         /// <summary>
@@ -208,8 +292,15 @@ namespace BookStore.Controllers
                 {
                     //user logged in, return to home page
                     case SignInStatus.Success:
-                        string role = (User.IsInRole("Admin")) ? "Admin" : "User";
+                        string role = null;
+                        // await a little bit slow needs to fetch user for getting correct information about user role 
+                        User currentUser = UserManager.FindByName(user.UserName);
+                        //check if the user has the role "Admin"
+                        bool admin = UserManager.IsInRole(currentUser.Id, "Admin");
+                        // assign role with correct role
+                        role = (admin) ? "Admin" : "User";
                         return Json(new { status = "Success", role = role });
+
                     //user not logged in, show information for the user
                     case SignInStatus.Failure:
                         return Json(new { status = "Failure", role = "" });
@@ -257,25 +348,36 @@ namespace BookStore.Controllers
                 City = x.City,
                 ZipCode = x.ZipCode,
                 Email = x.Email,
+                PhoneNumber = x.PhoneNumber,
+                Admin = User.IsInRole("Admin"),
                 Id = x.Id
             }).ToList();
+
+
 
             // return peoples, allowing the method to be HttpGet
             return Json(people, JsonRequestBehavior.AllowGet);
 
         }
 
+        /// <summary>
+        /// Function for checking if if user is logged in and what role the user has.
+        /// </summary>
+        /// <returns>Json</returns>
         [HttpPost]
         public JsonResult IsLoggedIn()
         {
+            //check if the user is authenticated that is logged in
             if (User.Identity.IsAuthenticated)
             {
+                // check what role the user has admin or user
                 var role = (User.IsInRole("Admin")) ? "Admin" : "User";
+                // return that user is logged in and what role the user has
                 return Json(new { status = true, role = role });
 
             }
+            // the user isn't logged in
             return Json(null);
-
         }
     }
 }

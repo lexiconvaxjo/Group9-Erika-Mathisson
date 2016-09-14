@@ -24,15 +24,15 @@ namespace BookStore.ViewModels
         [MaxLength(25)]
         public string LastName { get; set; }
 
-        [Required]
+  //      [Required]
         [MinLength(4)]
-        [MaxLength(25)]
+     //   [MaxLength(25)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Required]
+   //     [Required]
         [MinLength(4)]
-        [MaxLength(25)]
+     //   [MaxLength(25)]
         [DataType(DataType.Password)]
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
