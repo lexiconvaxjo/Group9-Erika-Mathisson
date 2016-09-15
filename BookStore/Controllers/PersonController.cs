@@ -196,14 +196,6 @@ namespace BookStore.Controllers
             [Bind(Include = "Id, UserName, FirstName, LastName, PassWord, ConfirmPassword, Email, Address, City, ZipCode, PhoneNumber, Admin")]
             EditUserVIewModel user)
         {
-             //check if the users password is empty in that case it shouldn't change, fetch the current password
-            //if (user.Password == null)
-            //{
-            //    var CurrentUser = await UserManager.FindByNameAsync(user.UserName);
-            //    user.Password = CurrentUser.PasswordHash;
-            //    user.ConfirmPassword = CurrentUser.PasswordHash;                
-            //}
-
             //check if model is valid
             if (ModelState.IsValid)
             {
@@ -241,7 +233,7 @@ namespace BookStore.Controllers
                             message = message + error.ToString() + " ";
                         }
                     }
-                    return Json(new {status = "Failure", message = message });
+                    return Json(new { status = "Failure", message = message });
                 }
                 else
                 {
@@ -258,9 +250,9 @@ namespace BookStore.Controllers
                         await UserManager.AddToRoleAsync(registeredUser.Id, "User");
                         role = "User";
                     }
- 
+
                     return Json(new { status = "Success", role = role });
-                 //   return Json("Success");
+                    //   return Json("Success");
                 }
             }
             else
@@ -271,7 +263,7 @@ namespace BookStore.Controllers
 
                 return Json(new { status = "Failure", message = message });
             }
-            
+
         }
 
         /// <summary>
@@ -299,11 +291,11 @@ namespace BookStore.Controllers
                         bool admin = UserManager.IsInRole(currentUser.Id, "Admin");
                         // assign role with correct role
                         role = (admin) ? "Admin" : "User";
-                        return Json(new { status = "Success", role = role });
+                        return Json(new { status = "Success", role = role, userName = currentUser.UserName });
 
                     //user not logged in, show information for the user
                     case SignInStatus.Failure:
-                        return Json(new { status = "Failure", role = "" });
+                        return Json(new { status = "Failure", role = "", userName = "" });
                     default:
                         break;
                 }
@@ -349,15 +341,43 @@ namespace BookStore.Controllers
                 ZipCode = x.ZipCode,
                 Email = x.Email,
                 PhoneNumber = x.PhoneNumber,
-                Admin = User.IsInRole("Admin"),
+                //   Admin = User.IsInRole("Admin"),
                 Id = x.Id
             }).ToList();
 
+            foreach (var person in people)
+            {
+                var role = UserManager.GetRoles(person.Id);
+
+                if (role.Contains("Admin"))
+                {
+                    person.Admin = true;
+                }
+                else
+                {
+                    person.Admin = false;
+                }
+
+            }
 
 
             // return peoples, allowing the method to be HttpGet
             return Json(people, JsonRequestBehavior.AllowGet);
 
+        }
+
+        /// <summary>
+        /// function for getting information about a single user
+        /// </summary>
+        /// <param name="userName">user name of user whom should be fetched</param>
+        /// <returns>Json</returns>
+
+        //    public JsonResult GetPerson([Bind(Include = "UserName")] MyPagesViewModel user) 
+        [HttpPost]
+        public JsonResult GetPerson()
+        {
+            User person = UserManager.FindByName(User.Identity.Name);
+            return Json(person);
         }
 
         /// <summary>
@@ -372,12 +392,55 @@ namespace BookStore.Controllers
             {
                 // check what role the user has admin or user
                 var role = (User.IsInRole("Admin")) ? "Admin" : "User";
-                // return that user is logged in and what role the user has
-                return Json(new { status = true, role = role });
+                // get the logged in users user name
+                var userName = User.Identity.Name;
+                // return that user is logged in, what role the user has and the user name
+                return Json(new { status = true, role = role, userName = userName });
 
             }
             // the user isn't logged in
             return Json(null);
+        }
+
+        [HttpPost]
+        public async System.Threading.Tasks.Task<JsonResult> ChangePassword([Bind(Include = "CurrentPassword, NewPassword, ConfirmNewPassword")] ChangePasswordViewModel user)
+        {
+            if (ModelState.IsValid)
+            {
+                var status = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), user.CurrentPassword, user.NewPassword);
+
+                if (status.Succeeded)
+                {
+                    return Json(new { status = "Success" });
+
+
+
+
+
+                }
+                else
+                {
+                    // retrieve information about what went wrong and send message to page
+                    string message = "";
+                    if (status.Errors != null)
+                    {
+                        foreach (var error in status.Errors)
+                        {
+                            message = message + error.ToString() + " ";
+                        }
+                    }
+                    return Json(new { status = "Failure", message = message });
+                }
+            }
+            else
+            {
+                var message = string.Join(" | ", ModelState.Values
+                   .SelectMany(v => v.Errors)
+                   .Select(e => e.ErrorMessage));
+
+                return Json(new { status = "Failure", message = message });
+
+            }
         }
     }
 }

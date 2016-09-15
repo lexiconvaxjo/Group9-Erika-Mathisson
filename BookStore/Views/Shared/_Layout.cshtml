@@ -38,39 +38,50 @@
                     <li ng-if="!isLoggedIn"><a href="#/register"><font color="green"><span class="glyphicon glyphicon-user"></span> Register</font></a></li>
                     @*}*@
                     @*@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                    {*@
-                        <li ng-if="isLoggedIn && role == 'Admin'"><a href="#/handlePeople"><font color="green"><span class="glyphicon glyphicon-user"></span> Handle people</font></a></li>
-                    
-                    @*}*@                    
+                        {*@
+                    <li ng-if="isLoggedIn && role == 'Admin'"><a href="#/handlePeople"><font color="green"><span class="glyphicon glyphicon-user"></span> Handle people</font></a></li>
+                 @*   <li ng-if="isLoggedIn && role == 'User'"><a href="#/myPages"><font color="green"><span class="glyphicon glyphicon-user"></span> My pages</font></a></li>*@
+
+                    <li ng-if="isLoggedIn && role == 'User'" class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown"><font color="green"><span class="glyphicon glyphicon-user"></span> My pages </font><span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#/myPages"><font color="green"> <span class="glyphicon glyphicon-edit"></span> Change userinfo</font></a></li>
+                            <li><a href="#/changePassword"><font color="green">Change password</font></a></li>
+                            <li><a href="#"><font color="green">Order history</font></a></li>
+                        </ul>
+                    </li>
+
+
+                    @*}*@
 
                     @*@if (!User.Identity.IsAuthenticated)
-                    {*@
-                        <li ng-if="!isLoggedIn"><a href="#/logIn"><font color="green"><span class="glyphicon glyphicon-log-in"></span> Login</font></a></li>
+                        {*@
+                    <li ng-if="!isLoggedIn"><a href="#/logIn"><font color="green"><span class="glyphicon glyphicon-log-in"></span> Login</font></a></li>
                     @*}*@
 
                     @*@if (User.IsInRole("Admin"))
-                    {*@
-                        <li ng-if="role == 'Admin'"><a href="#/logIn"><font color="green"><span class="glyphicon glyphicon-log-in"></span> Admin</font></a></li>
+                        {*@
+                    <li ng-if="role == 'Admin'"><a href="#/logIn"><font color="green"><span class="glyphicon glyphicon-log-in"></span> Admin</font></a></li>
                     @*}*@
                     @*@if (User.Identity.IsAuthenticated)
-                    {*@
-                        @*<ul class="nav navbar-nav navbar-right">
+                        {*@
+                    @*<ul class="nav navbar-nav navbar-right">
                             <li>@Html.ActionLink("Log out", "LogOutUser", "Account")</li>
 
                         </ul>*@
-                        <li ng-if="isLoggedIn"><a href="/Person/LogOutUser"><font color="green"><span class="glyphicon glyphicon-log-out"></span> Log out</font></a></li>
+                    <li ng-if="isLoggedIn"><a href="/Person/LogOutUser"><font color="green"><span class="glyphicon glyphicon-log-out"></span> Log out</font></a></li>
 
-                   @*//     <li><a href="/#/logIn"><font color="green"><span class="glyphicon glyphicon-log-out"></span> Log out</font></a></li>*@
+                    @*//     <li><a href="/#/logIn"><font color="green"><span class="glyphicon glyphicon-log-out"></span> Log out</font></a></li>*@
 
                     @*}*@
-                    
+
                 </ul>
             </div>
         </div>
     </div>
 
 
-    <div class="container body-content">       
+    <div class="container body-content">
         @RenderBody()
         <hr />
         <footer>

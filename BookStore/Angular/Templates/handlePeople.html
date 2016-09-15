@@ -2,10 +2,16 @@
 
 <h1>People</h1>
 
+<h1 ng-if="isLoggedIn && role == 'Admin'"> Logged in Admin</h1>
+<h1 ng-if="!isLoggedIn && role == 'Admin'"> Not Logged in Admin</h1>
+<h1 ng-if="!isLoggedIn && role == 'User'"> Not Logged in User</h1>
+<h1 ng-if="isLoggedIn && role == 'User'"> Logged in User</h1>
+
+
 <p>{{ message }}</p>
 
 
-<div ng-controller="peopleController as pc">    
+<div ng-controller="peopleController as pc">
     <form ng-show="showForm" class="form-horizontal" name="addForm" method="post" novalidate>
         <div class="form-group">
             <label class="control-label col-xs-2">User name: </label>
@@ -49,14 +55,14 @@
         </div>
         <div class="form-group">
             <label class="control-label col-xs-2">Admin?</label>
-            <input type="checkbox" ng-model="person.Admin" name="Admin" value="True" />
-        </div>   
+            <input type="checkbox" ng-model="person.Admin" name="Admin" />
+        </div>
 
         <div class="form-group">
             <input type="hidden" ng-model="person.Id" />
-        </div>           
+        </div>
         <button type="submit" ng-disabled="addForm.$invalid" ng-click="pc.savePerson()" class="btn btn-success">Submit</button>
-        <button type="reset" class="btn btn-default">Reset</button>       
+        <button type="reset" class="btn btn-default">Reset</button>
     </form>
     <font color="red"> {{statusMessage}} </font>
     <br />
@@ -82,7 +88,7 @@
             <!--<div class="col-xs-2">{{listperson.Address}}</div>
             <div class="col-xs-1">{{listperson.ZipCode}}</div>
             <div class="col-xs-1">{{listperson.City}}</div>-->
-            
+
             <div class="col-xs-2">
                 <a href="#/handlePeople" ng-click="pc.edit(listperson.Id)">edit</a> |
                 <a href="#" >change password</a>

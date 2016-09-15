@@ -1,0 +1,94 @@
+﻿<!-- myPages.html -->
+
+<h1>My pages - Change info </h1>
+
+<h1 ng-if="isLoggedIn && role == 'Admin'"> Logged in Admin</h1>
+<h1 ng-if="!isLoggedIn && role == 'Admin'"> Not Logged in Admin</h1>
+<h1 ng-if="!isLoggedIn && role == 'User'"> Not Logged in User</h1>
+<h1 ng-if="isLoggedIn && role == 'User'"> Logged in User</h1>
+
+
+<p>{{ message }}</p>
+
+
+<div ng-controller="myPagesController as mpc">
+    <form ng-show="myForm" class="form-horizontal" name="myForm" method="post" novalidate>
+        <div class="form-group">
+            <label class="control-label col-xs-2">User name: </label>
+            <input ng-model="myPerson.UserName" class="form-control" ng-minlength="4" ng-maxlength="25" ng-readonly="true" ng-required="true" name="UserName" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">First name: </label>
+            <input ng-model="myPerson.FirstName" class="form-control" ng-minlength="4" ng-maxlength="25" ng-required="true" name="FirstName" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Last name: </label>
+            <input ng-model="myPerson.LastName" class="form-control" ng-minlength="4" ng-maxlength="25" ng-required="true" name="LastName" />
+        </div>
+        <!--<div class="form-group">
+            <label class="control-label col-xs-2">Password: </label>
+            <input ng-model="person.Password" class="form-control" type="password" ng-minlength="4" ng-maxlength="25" ng-readonly="true" name="Password" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Confirm password: </label>
+            <input ng-model="person.ConfirmPassword" class="form-control" type="password" ng-minlength="4" ng-maxlength="25" ng-readonly="true" name="ConfirmPassword" />
+        </div>-->
+        <div class="form-group">
+            <label class="control-label col-xs-2">Email: </label>
+            <input ng-model="myPerson.Email" class="form-control" type="email" ng-minlength="7" ng-maxlength="30" ng-readonly="true" ng-required="true" name="Email" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Address: </label>
+            <input ng-model="myPerson.Address" class="form-control" ng-minlength="4" ng-maxlength="25" ng-required="true" name="Address" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">City: </label>
+            <input ng-model="myPerson.City" class="form-control" ng-minlength="4" ng-maxlength="25" ng-required="true" name="City" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Zip code: </label>
+            <input ng-model="myPerson.ZipCode" class="form-control" ng-minlength="5" ng-maxlength="10" ng-required="true" name="ZipCode" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Phone number: </label>
+            <input ng-model="myPerson.PhoneNumber" class="form-control" ng-minlength="9" ng-maxlength="15" name="PhoneNumber" />
+        </div>
+        <div class="form-group">
+            <input type="hidden" ng-model="myPerson.Id" />
+        </div>
+        <button type="submit" ng-disabled="addForm.$invalid" ng-click="mpc.updatePerson()" class="btn btn-success">Submit</button>
+        <button type="reset" class="btn btn-default">Reset</button>
+    </form>
+    <font color="red"> {{statusMessage}} </font>
+    <br />
+
+    <!--<div class="col-xs-12">
+        <div class="col-xs-2" style="font-size:large">User name</div>
+        <div class="col-xs-2" style="font-size:large">First name</div>
+        <div class="col-xs-3" style="font-size:large">Last name</div>
+        <div class="col-xs-3" style="font-size:large">Email</div>-->
+        <!--<div class="col-xs-2" style="font-size:large">Address</div>
+        <div class="col-xs-1" style="font-size:large">ZipCode</div>
+        <div class="col-xs-1" style="font-size:large">City</div> -->
+        <!--<div class="col-xs-2" style="font-size:large">Action</div>
+    </div>-->
+
+    <!--<div>
+        <br />-->
+   <!--     <div class="col-xs-12" ng-repeat="listperson in people |filter:search track by $index"> -->
+            <!--<div class="col-xs-2">{{myPerson.UserName}}</div>
+            <div class="col-xs-2">{{myPerson.FirstName}}</div>
+            <div class="col-xs-3">{{myPerson.LastName}}</div>
+            <div class="col-xs-3">{{myPerson.Email}}</div>-->
+            <!--<div class="col-xs-2">{{myPerson.Address}}</div>
+            <div class="col-xs-1">{{myPerson.ZipCode}}</div>
+            <div class="col-xs-1">{{myPerson.City}}</div>-->
+
+            <!--<div class="col-xs-2">
+                <a href="#/handlePeople" ng-click="mpc.edit(myPerson.Id)">edit</a> |
+                <a href="#">change password</a>
+            </div>
+
+        </div>-->
+    </div>
+<!-- </div> -->

@@ -6,6 +6,37 @@ using System.Web;
 
 namespace BookStore.ViewModels
 {
+    //public class MyPagesViewModel
+    //{
+    //    [Required]
+    //    public string UserName { get; set; }
+    //}
+
+
+
+    public class ChangePasswordViewModel
+    {
+        [Required]
+        [MinLength(4)]
+        [MaxLength(25)]
+        [DataType(DataType.Password)]
+        public string CurrentPassword { get; set; }
+
+        [Required]
+        [MinLength(4)]
+        [MaxLength(25)]
+        [DataType(DataType.Password)]
+        public string NewPassword { get; set; }
+
+        [Required]
+        [MinLength(4)]
+        [MaxLength(25)]
+        [DataType(DataType.Password)]
+        [Compare("NewPassword")]
+        public string ConfirmNewPassword { get; set; }
+    }
+
+
     public class EditUserVIewModel
     {
         [Required]
