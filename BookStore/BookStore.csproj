@@ -976,6 +976,10 @@
     <Compile Include="Migrations\201609090816368_addedTablesForDatabase.Designer.cs">
       <DependentUpon>201609090816368_addedTablesForDatabase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609160844386_updatedBook.cs" />
+    <Compile Include="Migrations\201609160844386_updatedBook.Designer.cs">
+      <DependentUpon>201609160844386_updatedBook.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\DB.cs" />
@@ -1018,6 +1022,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201609090816368_addedTablesForDatabase.resx">
       <DependentUpon>201609090816368_addedTablesForDatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609160844386_updatedBook.resx">
+      <DependentUpon>201609160844386_updatedBook.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

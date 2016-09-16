@@ -18,9 +18,9 @@ namespace BookStore.Models
         [Required]
         public string Author { get; set; }
         [Required]
-        public string Desctiption { get; set; }
+        public string Description { get; set; }
         [Required]
-        public int ISBN { get; set; }
+        public long ISBN { get; set; }
         [Required]
         public int NumberInStock { get; set; }
         [Required]
