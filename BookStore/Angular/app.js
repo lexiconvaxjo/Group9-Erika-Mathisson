@@ -35,6 +35,11 @@
                 templateUrl: '/Angular/Templates/changePassword.html',
                 controller: 'changePassWordController'
             })
+            //route for the cart page
+            .when('/cart', {
+                templateUrl: '/Angular/Templates/cart.html',
+                controller: 'cartController'
+            })
 
             // route for the log in page
             .when('/logIn', {
@@ -43,6 +48,7 @@
             });
     });
 
+    //factory for the bookstore
     app.factory('bookFactory', function ($http, $window, $rootScope, $timeout) {
 
         var bookFactory = {};
@@ -59,12 +65,16 @@
         bookFactory.userRole = null;
         // what user name the user has
         bookFactory.userName = null;
+        // for items in cart
+        bookFactory.cart = [];
 
         // for checking if user is logged in, what role the user has and what username the user has
         $http.post("/Person/IsLoggedIn").then(function (response) {
             if (response.data.status === true) {
                 bookFactory.isAuthorized = true;
+                //setting what type of role the user has
                 bookFactory.userRole = response.data.role;
+                //setting the username for the user
                 bookFactory.userName = response.data.userName;
             }
         });
@@ -242,7 +252,7 @@
                         console.log(data.message);
                     }
                     else {
-                        // model isn't valid set the error message/messages
+                        // model from MVC isn't valid set the error message/messages
                         bookFactory.message = data;
                     }
                 })
@@ -291,6 +301,55 @@
                 console.log("Error");
             });
         };
+
+        //function for getting cart
+        bookFactory.getCart = function () {          
+           
+                console.log(bookFactory.cart);
+                bookFactory.cart = JSON.parse(sessionStorage.getItem('cart'));
+                console.log(bookFactory.cart);              
+                return bookFactory.cart;    
+        };      
+
+
+        // function for adding selected book to the cart
+        bookFactory.addBookToCart = function (Id) {
+            console.log(Id);
+            for (var i in bookFactory.books) {
+                if (bookFactory.books[i].Id === Id) {
+                    console.log(bookFactory.books[i]);
+                    bookFactory.cart.push(bookFactory.books[i]);
+                    console.log(bookFactory.cart);
+                    sessionStorage.setItem('cart', JSON.stringify(bookFactory.cart));
+
+                    //for testing what's in the cart
+                    var test = JSON.parse(sessionStorage.getItem('cart'));
+                    console.log(test);
+                }
+            }
+        };
+
+        bookFactory.removeBookFromCart = function (Id) {
+            var currentCart = JSON.parse(sessionStorage.getItem('cart'));           
+
+            for (var i in bookFactory.cart) {               
+                if (bookFactory.cart[i].Id === Id) {
+                    bookFactory.cart.splice(i, 1);
+                   
+                    console.log(JSON.parse(sessionStorage.getItem('cart')));
+                    sessionStorage.setItem('cart', JSON.stringify(bookFactory.cart));
+                   
+                    //for testing what's in the cart                  
+                    console.log(JSON.parse(sessionStorage.getItem('cart')));
+
+                }
+
+            }
+        }
+
+
+
+
         return bookFactory;
     });
 
@@ -323,7 +382,7 @@
         });
 
         //function for adding or edit a book
-        this.saveBook = function () {           
+        this.saveBook = function () {
             // getting addbook from scope
             var addbook = $scope.addbook;
             //check if the book already exist (should be edited) or not (should be added)
@@ -338,9 +397,9 @@
                     }
                     else {
 
-                        $scope.books = bookFactory.books;                       
+                        $scope.books = bookFactory.books;
                         $scope.addbook = {};
-                        $scope.statusMessage = "";    
+                        $scope.statusMessage = "";
                     }
                 });
 
@@ -353,8 +412,8 @@
                    if (bookFactory.message != "Success") {
                        $scope.statusMessage = bookFactory.message;
                    }
-                   else {                      
-                       $scope.books = bookFactory.books;                      
+                   else {
+                       $scope.books = bookFactory.books;
                        $scope.addbook = {};
                        $scope.statusMessage = "";
                    }
@@ -364,8 +423,17 @@
 
         //function for copying information about a specific book and paste the information to the form 
         this.edit = function (Id) {
-            console.log(Id)
+            console.log(Id);
             $scope.addbook = angular.copy(bookFactory.getBook(Id));
+        };
+
+        //function for adding a book to the cart
+        this.addBookToCart = function (Id) {
+            console.log(Id);
+            bookFactory.addBookToCart(Id);
+            $scope.cart = JSON.parse(sessionStorage.getItem('cart'));
+            //   $scope.cart = bookFactory.cart;          
+            console.log($scope.cart);
         };
     });
 
@@ -521,4 +589,61 @@
             $scope.statusMessage = "";
         }
     });
+
+    // controller for the cart
+    app.controller('cartController', function ($scope, bookFactory, $window) {
+
+        //message for cart page
+        $scope.message = 'This is the cart page!';
+
+        //setting cart $scope
+        //  $scope.cart = bookFactory.cart;
+        //  var test = JSON.parse(sessionStorage.getItem('cart'));
+
+        //setting cart
+        $scope.cart = bookFactory.cart;
+
+        //function for setting the cart to the scope
+        //bookFactory.getCart()
+        //.then(function () {
+        //    $scope.cart = bookFactory.cart;
+        //});
+
+        bookFactory.getCart()
+        {
+            $scope.cart = bookFactory.cart;
+            console.log(bookFactory.cart);
+        };
+            
+
+     //   $scope.cart = JSON.parse(sessionStorage.getItem('cart'));
+     //   console.log($scope.cart);
+
+        this.deleteFromCart = function (Id) {
+            console.log(Id);
+
+            bookFactory.removeBookFromCart(Id);
+
+
+        };
+
+        ////function for adding a book to the cart
+        //this.addBookToCart = function (Id) {
+        //    console.log(Id);
+        //    bookFactory.addBookToCart(Id);
+        //    $scope.cart = JSON.parse(sessionStorage.getItem('cart'));
+        //    //   $scope.cart = bookFactory.cart;          
+        //    console.log($scope.cart);
+        //};
+
+
+
+
+    });
+
+   
+
+
+
+
 })();

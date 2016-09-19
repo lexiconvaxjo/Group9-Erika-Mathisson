@@ -64,12 +64,14 @@
             <div class="col-xs-2">{{book.Price}}</div>
 
             <div class="col-xs-2">
-                <a href="#/">add to cart</a> 
+                <a href="#/" ng-click="main.addBookToCart(book.Id)">add to cart</a> 
                 <a href="#/" ng-if="isLoggedIn && role == 'Admin'" ng-click="main.edit(book.Id)"> | edit</a>
             </div>
 
         </div>
     </div>
+    <h1>Cart</h1>
+    {{cart}}
 </div>
 
 

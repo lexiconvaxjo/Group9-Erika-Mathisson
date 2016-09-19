@@ -138,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Angular\app.js" />
+    <Content Include="Angular\Templates\cart.html" />
     <Content Include="Angular\Templates\changePassword.html" />
     <Content Include="Angular\Templates\Img\books.jpeg" />
     <Content Include="Angular\Templates\Img\books2.jpg" />
