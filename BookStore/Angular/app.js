@@ -58,6 +58,7 @@
         bookFactory.people = [];
         // for added books
         bookFactory.books = [];
+        // for person
         bookFactory.myPerson = {};
         // if user is logged in
         bookFactory.isAuthorized = false;
@@ -67,6 +68,8 @@
         bookFactory.userName = null;
         // for items in cart
         bookFactory.cart = [];
+        // total amount in cart
+        bookFactory.totalAmount = 0;
 
         // for checking if user is logged in, what role the user has and what username the user has
         $http.post("/Person/IsLoggedIn").then(function (response) {
@@ -176,11 +179,8 @@
         bookFactory.editPerson = function (person) {
             return $http.post('/Person/EditPerson', person)
             .success(function (data) {
-                //check if error message is returned, set it to the message property
-                //if (data.status === "EmailExists") {
-                //    bookFactory.message = "Email already exist, please re enter your information!";
-                //}
                 bookFactory.message = "";
+                // something went wrong set error message to page
                 if (data.status === "Failure") {
                     bookFactory.message = data.message;
                 }
@@ -208,14 +208,16 @@
         bookFactory.changePassword = function (change) {
             return $http.post('/Person/ChangePassword', change)
             .success(function (data) {
+                //something went wrong send info to page
                 if (data.status === "Failure") {
                     bookFactory.message = data.message;
                 }
-                    //person is logged in ok
+                    //persons password is changed ok send info to page
                 else if (data.status === "Success") {
                     bookFactory.message = "Password changed ok";
                 }
             })
+                //something went wrong
             .error(function (data) {
                 console.log("Error");
                 console.log(data);
@@ -242,6 +244,7 @@
                     //book is saved to database
                     if (data.status === "Success") {
                         bookFactory.message = "Success";
+                        // add the book to the book array
                         bookFactory.books.push(data.addedBook);
                     }
                     else if (data.status === "ISBNExist") {
@@ -278,7 +281,7 @@
                 //book is updated to database
                 if (data.status === "Success") {
                     bookFactory.message = "Success";
-                    //find the book using Id and update it
+                    //find the book in array using Id and update it
                     for (var i in bookFactory.books) {
                         if (bookFactory.books[i].Id == book.Id) {
                             bookFactory.books[i] = book;
@@ -302,54 +305,145 @@
             });
         };
 
+        ////function for getting cart
+        //bookFactory.getCart = function () {
+
+        //    console.log(bookFactory.cart);
+        //    bookFactory.cart = JSON.parse(sessionStorage.getItem('cart'));
+        //    console.log(bookFactory.cart);
+        //    return bookFactory.cart;
+        //};
+
         //function for getting cart
-        bookFactory.getCart = function () {          
-           
-                console.log(bookFactory.cart);
-                bookFactory.cart = JSON.parse(sessionStorage.getItem('cart'));
-                console.log(bookFactory.cart);              
-                return bookFactory.cart;    
-        };      
+        // need to use session in order to keep the cart if page is refreshed
+        bookFactory.getCart = function () {
+            // get cart session
+            var cartSession = JSON.parse(sessionStorage.getItem('cart'));
+            // check if session is null in that case it first time used and needs to be fetched from bookfactory cart
+            if (cartSession === null) {
+                sessionStorage.setItem('cart', JSON.stringify(bookFactory.cart));
+            }
+            // set session to bookFactory cart otherwise cart will be empty if page is refreshed
+            bookFactory.cart = JSON.parse(sessionStorage.getItem('cart'));
+            return bookFactory.cart;
+        };
+
+        // function for getting the total amount in cart
+        bookFactory.getTotalAmount = function () {
+            var currentAmount = 0;
+            // loop through the cart and add items and prices together
+            for (var j in bookFactory.cart) {
+                currentAmount = currentAmount + bookFactory.cart[j].Price * bookFactory.cart[j].NoOfItem;
+            }
+            // setting the current amount to bookfactory
+            bookFactory.totalAmount = currentAmount;
+            // do you need to set totalamount to session??
+            //   sessionStorage.setItem('totalAmount', JSON.stringify(bookFactory.totalAmount)); 
+            //     bookFactory.totalAmount = JSON.parse(sessionStorage.getItem('totalAmount'));
+            return bookFactory.totalAmount;
+        };
+
+        ////from github
+        //// function for adding selected book to the cart 
+        //bookFactory.addBookToCart = function (Id) {
+        //    console.log(Id);
+        //    for (var i in bookFactory.books) {
+        //        if (bookFactory.books[i].Id === Id) {
+        //            console.log(bookFactory.books[i]);
+        //            bookFactory.cart.push(bookFactory.books[i]);
+        //            console.log(bookFactory.cart);
+        //            sessionStorage.setItem('cart', JSON.stringify(bookFactory.cart));
+
+
+        //            //for testing what's in the cart 
+        //            var test = JSON.parse(sessionStorage.getItem('cart'));
+        //            console.log(test);
+        //        }
+        //    }
+        //};
 
 
         // function for adding selected book to the cart
         bookFactory.addBookToCart = function (Id) {
-            console.log(Id);
-            for (var i in bookFactory.books) {
-                if (bookFactory.books[i].Id === Id) {
-                    console.log(bookFactory.books[i]);
-                    bookFactory.cart.push(bookFactory.books[i]);
-                    console.log(bookFactory.cart);
-                    sessionStorage.setItem('cart', JSON.stringify(bookFactory.cart));
-
-                    //for testing what's in the cart
-                    var test = JSON.parse(sessionStorage.getItem('cart'));
-                    console.log(test);
+            // variable for checking if item exist in cart
+            var exist = false;
+            // loop through the cart and check if added book already exist in cart
+            for (var j in bookFactory.cart) {
+                if (bookFactory.cart[j].Id === Id) {
+                    //the added book already exist in cart
+                    exist = true;
+                    //check is NoOfItem is undefined
+                    if (bookFactory.cart[j].NoOfItem === undefined) {
+                        var bookToAdd = bookFactory.cart[j];
+                        // add the parameter NoOfItem to the book who should be added to cart, 
+                        // set the parameter to value 1 since it's the first added book of that type
+                        bookToAdd.NoOfItem = 1;
+                        // add the book to the cart
+                        bookFactory.cart.push(bookToAdd);
+                        // set the cart to the session so it doesn't disapear if page is refreshed
+                        sessionStorage.setItem('cart', JSON.stringify(bookFactory.cart));
+                    }
+                    else {
+                        // the added book already exist in cart update parameter NoOfItem and set the cart to session
+                        bookFactory.cart[j].NoOfItem = bookFactory.cart[j].NoOfItem + 1;
+                        sessionStorage.setItem('cart', JSON.stringify(bookFactory.cart));
+                    }
+                }
+            }
+            // the book doesn't exist in cart
+            if (exist === false) {
+                // loop through the list of books to find the book who should be added to cart
+                for (var i in bookFactory.books) {
+                    if (bookFactory.books[i].Id === Id) {
+                        var bookToAdd = bookFactory.books[i];
+                        // add the parameter NoOfItem to the book and set value to 1 since it's first book of that kind to be added 
+                        bookToAdd.NoOfItem = 1;
+                        // add the book to cart
+                        bookFactory.cart.push(bookToAdd);
+                        // set the cart to session so it doesn't disapear if page is refreshed
+                        sessionStorage.setItem('cart', JSON.stringify(bookFactory.cart));
+                    }
                 }
             }
         };
 
+        // function for removing a book from a cart
         bookFactory.removeBookFromCart = function (Id) {
-            var currentCart = JSON.parse(sessionStorage.getItem('cart'));           
-
-            for (var i in bookFactory.cart) {               
+            var currentCart = JSON.parse(sessionStorage.getItem('cart'));
+            // loop through the cart for finding the book whom should be removed
+            for (var i in bookFactory.cart) {
                 if (bookFactory.cart[i].Id === Id) {
+                    // update the total amount in cart based on removed book
+                    var removeFromTotal = bookFactory.cart[i].Price * bookFactory.cart[i].NoOfItem;
+                    var newTotalAmount = bookFactory.totalAmount - removeFromTotal;
+                    // set the new total amount to factory amount
+                    bookFactory.totalAmount = newTotalAmount;
+                    //remove the book from cart
                     bookFactory.cart.splice(i, 1);
-                   
-                    console.log(JSON.parse(sessionStorage.getItem('cart')));
+                    //set cart and totalamount to session
                     sessionStorage.setItem('cart', JSON.stringify(bookFactory.cart));
-                   
-                    //for testing what's in the cart                  
-                    console.log(JSON.parse(sessionStorage.getItem('cart')));
-
+                    sessionStorage.setItem('totalAmount', JSON.stringify(bookFactory.totalAmount));
                 }
-
             }
-        }
+        };
 
-
-
-
+        //function for updating a cart
+        bookFactory.updateCart = function (book) {
+            // fetch current cart
+            var currentCart = JSON.parse(sessionStorage.getItem('cart'));
+            // loop through the cart to find book who should be updated
+            for (var i in bookFactory.cart) {
+                if (bookFactory.cart[i].Id === book.Id) {
+                    // update the total amount based on updated book in cart
+                    var oldSum = bookFactory.cart[i].Price * bookFactory.cart[i].NoOfItem;
+                    bookFactory.cart[i] = book;
+                    var newSum = bookFactory.cart[i].Price * bookFactory.cart[i].NoOfItem;
+                    bookFactory.totalAmount = bookFactory.totalAmount - oldSum + newSum;
+                    //updated session with updated cart
+                    sessionStorage.setItem('cart', JSON.stringify(bookFactory.cart));
+                }
+            }
+        };
         return bookFactory;
     });
 
@@ -375,7 +469,6 @@
             }
         });
 
-
         //function for setting the array of books to the scope
         bookFactory.getBooks().then(function () {
             $scope.books = bookFactory.books;
@@ -391,12 +484,11 @@
                 bookFactory
                 .addBook($scope.addbook)
                 .then(function () {
-                    //check if a message is returned from factory in that case print the message on the page                   
+                    //check if a message is returned from factory and not "Success" in that case print the message on the page                   
                     if (bookFactory.message !== "Success") {
                         $scope.statusMessage = bookFactory.message;
                     }
                     else {
-
                         $scope.books = bookFactory.books;
                         $scope.addbook = {};
                         $scope.statusMessage = "";
@@ -429,11 +521,9 @@
 
         //function for adding a book to the cart
         this.addBookToCart = function (Id) {
-            console.log(Id);
             bookFactory.addBookToCart(Id);
             $scope.cart = JSON.parse(sessionStorage.getItem('cart'));
-            //   $scope.cart = bookFactory.cart;          
-            console.log($scope.cart);
+            //   $scope.cart = bookFactory.cart;      
         };
     });
 
@@ -455,7 +545,6 @@
                     $scope.statusMessage = bookFactory.message;
                 }
                 //   $window.location.href = "#/";
-
             });
         };
     });
@@ -516,7 +605,6 @@
         this.updatePerson = function updatePerson(person) {
             //getting person from scope
             var person = $scope.myPerson;
-            console.log(person);
             bookFactory
                 .editPerson(person)
                 .then(function () {
@@ -547,7 +635,6 @@
             })
         }
     });
-
 
     // controller for handling log in
     app.controller('loginController', function ($scope, $window, bookFactory, $rootScope, $timeout) {
@@ -591,59 +678,49 @@
     });
 
     // controller for the cart
-    app.controller('cartController', function ($scope, bookFactory, $window) {
+    app.controller('cartController', function ($scope, bookFactory, $window, $timeout) {
 
         //message for cart page
         $scope.message = 'This is the cart page!';
 
-        //setting cart $scope
-        //  $scope.cart = bookFactory.cart;
-        //  var test = JSON.parse(sessionStorage.getItem('cart'));
-
         //setting cart
         $scope.cart = bookFactory.cart;
 
-        //function for setting the cart to the scope
-        //bookFactory.getCart()
-        //.then(function () {
-        //    $scope.cart = bookFactory.cart;
-        //});
+        // for watching the totalamount value and update it if changed
+        $scope.$watch(function () {
+            return bookFactory.totalAmount;
+        }, function (newValue, oldValue) {
+            if (newValue !== oldValue) {
+                $scope.totalAmount = bookFactory.totalAmount;
+            }
+        });
 
+        //function for getting cart
         bookFactory.getCart()
         {
             $scope.cart = bookFactory.cart;
-            console.log(bookFactory.cart);
         };
-            
 
-     //   $scope.cart = JSON.parse(sessionStorage.getItem('cart'));
-     //   console.log($scope.cart);
+        //function for getting the total amount
+        bookFactory.getTotalAmount()
+        {
+            $scope.totalAmount = bookFactory.totalAmount;
+        };
 
+        //function for deleting book from cart
         this.deleteFromCart = function (Id) {
-            console.log(Id);
-
             bookFactory.removeBookFromCart(Id);
-
-
+            $scope.totalAmount = bookFactory.totalAmount;
         };
 
-        ////function for adding a book to the cart
-        //this.addBookToCart = function (Id) {
-        //    console.log(Id);
-        //    bookFactory.addBookToCart(Id);
-        //    $scope.cart = JSON.parse(sessionStorage.getItem('cart'));
-        //    //   $scope.cart = bookFactory.cart;          
-        //    console.log($scope.cart);
-        //};
-
-
-
-
+        //function for updateing a book in cart
+        this.updateCart = function (book) {
+            bookFactory.updateCart(book);
+            bookFactory.getTotalAmount()
+            {
+                $scope.totalAmount = bookFactory.totalAmount;
+            };
+            $scope.totalAmount = bookFactory.totalAmount;
+        };
     });
-
-   
-
-
-
-
 })();

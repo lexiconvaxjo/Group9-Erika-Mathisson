@@ -164,25 +164,18 @@ namespace BookStore.Controllers
                             await UserManager.AddToRoleAsync(registeredUser.Id, "User");
                         }
                     }
-
-                    //the user is registered and saved ok to database, log in automatically
-                    //LogInViewModel vm = new LogInViewModel();
-                    //vm.UserName = model.UserName;
-                    //vm.Password = model.Password;
-                    //await Login(vm);
-                    //return RedirectToAction("Index", "Home");
-
+                    //user registered ok, send info to page
                     return Json("Success");
                 }
             }
             else
             {
+                // modelstate isn't valid, take all errors and save in a string, send to page
                 var message = string.Join(" | ", ModelState.Values
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
 
                 return Json(message);
-
             }
         }
 
@@ -199,17 +192,10 @@ namespace BookStore.Controllers
             //check if model is valid
             if (ModelState.IsValid)
             {
-                // var OldUser = await UserManager.FindByNameAsync(user.UserName);
+                // fetch user from database
                 var CurrentUser = await UserManager.FindByEmailAsync(user.Email);
 
-                //// email already exist and it doesn't belong to the person who should be edited, return error code
-                //if (CurrentUser != null && CurrentUser.Id != user.Id)
-                //{
-                //    return Json("EmailExists");
-                //}
-
-                //try to add the changes on the person to the database               
-
+                //try to add the changes on the person to the database   
                 CurrentUser.FirstName = user.FirstName;
                 CurrentUser.LastName = user.LastName;
                 CurrentUser.Email = user.Email;
@@ -240,6 +226,7 @@ namespace BookStore.Controllers
                     // fetch the registered user and assign a role
                     var registeredUser = await UserManager.FindByNameAsync(user.UserName);
                     string role = null;
+                    // check what type of role the user should have, Admin or User, and assign the correct one.
                     if (user.Admin == true)
                     {
                         await UserManager.AddToRoleAsync(registeredUser.Id, "Admin");
@@ -251,19 +238,19 @@ namespace BookStore.Controllers
                         role = "User";
                     }
 
-                    return Json(new { status = "Success", role = role });
-                    //   return Json("Success");
+                    // return status, edit went well and what role the user have
+                    return Json(new { status = "Success", role = role });                   
                 }
             }
             else
             {
+                //modelstate isn't valid, fetch error messages and send to page
                 var message = string.Join(" | ", ModelState.Values
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
-
+                
                 return Json(new { status = "Failure", message = message });
             }
-
         }
 
         /// <summary>
@@ -340,15 +327,14 @@ namespace BookStore.Controllers
                 City = x.City,
                 ZipCode = x.ZipCode,
                 Email = x.Email,
-                PhoneNumber = x.PhoneNumber,
-                //   Admin = User.IsInRole("Admin"),
+                PhoneNumber = x.PhoneNumber,               
                 Id = x.Id
             }).ToList();
-
+            // for every person in the list, check what type of role the user has and assign the role.
             foreach (var person in people)
             {
                 var role = UserManager.GetRoles(person.Id);
-
+                // check if user has the role Admin and assign it to each person
                 if (role.Contains("Admin"))
                 {
                     person.Admin = true;
@@ -357,25 +343,20 @@ namespace BookStore.Controllers
                 {
                     person.Admin = false;
                 }
-
             }
-
 
             // return peoples, allowing the method to be HttpGet
             return Json(people, JsonRequestBehavior.AllowGet);
-
         }
 
         /// <summary>
         /// function for getting information about a single user
         /// </summary>
         /// <param name="userName">user name of user whom should be fetched</param>
-        /// <returns>Json</returns>
-
-        //    public JsonResult GetPerson([Bind(Include = "UserName")] MyPagesViewModel user) 
+        /// <returns>Json</returns>       
         [HttpPost]
         public JsonResult GetPerson()
-        {
+        {            
             User person = UserManager.FindByName(User.Identity.Name);
             return Json(person);
         }
@@ -402,28 +383,33 @@ namespace BookStore.Controllers
             return Json(null);
         }
 
+        /// <summary>
+        /// function for changing password
+        /// </summary>
+        /// <param name="user">user whom should change password</param>
+        /// <returns>Json</returns>
         [HttpPost]
         public async System.Threading.Tasks.Task<JsonResult> ChangePassword([Bind(Include = "CurrentPassword, NewPassword, ConfirmNewPassword")] ChangePasswordViewModel user)
         {
+            // check if the model is ok
             if (ModelState.IsValid)
             {
+                //try and change the users password by entering both old and new password
                 var status = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), user.CurrentPassword, user.NewPassword);
-
+                // the password changed ok
                 if (status.Succeeded)
                 {
+                    // return the success status to the page
                     return Json(new { status = "Success" });
-
-
-
-
-
                 }
                 else
                 {
-                    // retrieve information about what went wrong and send message to page
+                    // retrieve information about what went wrong when trying to change the password
+                    // and send message to page
                     string message = "";
                     if (status.Errors != null)
                     {
+                        // set a message with all error messages
                         foreach (var error in status.Errors)
                         {
                             message = message + error.ToString() + " ";
@@ -434,12 +420,12 @@ namespace BookStore.Controllers
             }
             else
             {
+                // the modelstate isn't valid, fetch the errors and send to page
                 var message = string.Join(" | ", ModelState.Values
                    .SelectMany(v => v.Errors)
                    .Select(e => e.ErrorMessage));
 
                 return Json(new { status = "Failure", message = message });
-
             }
         }
     }
