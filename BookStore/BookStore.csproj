@@ -140,6 +140,7 @@
     <Content Include="Angular\app.js" />
     <Content Include="Angular\Templates\cart.html" />
     <Content Include="Angular\Templates\changePassword.html" />
+    <Content Include="Angular\Templates\checkout.html" />
     <Content Include="Angular\Templates\Img\books.jpeg" />
     <Content Include="Angular\Templates\Img\books2.jpg" />
     <Content Include="Angular\Templates\handlePeople.html" />
@@ -961,6 +962,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\BookController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\PersonController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -991,6 +993,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\EditUserVIewModel.cs" />
     <Compile Include="ViewModels\LogInPersonViewModel.cs" />
+    <Compile Include="ViewModels\OrderViewModel.cs" />
     <Compile Include="ViewModels\RegisterUserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1012,6 +1015,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Book\" />
+    <Folder Include="Views\Order\" />
     <Folder Include="Views\Person\" />
   </ItemGroup>
   <ItemGroup>

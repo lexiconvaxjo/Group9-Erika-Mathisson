@@ -40,6 +40,11 @@
                 templateUrl: '/Angular/Templates/cart.html',
                 controller: 'cartController'
             })
+            //route for check out page
+            .when('/checkout', {
+                templateUrl: '/Angular/Templates/checkout.html',
+                controller: 'checkoutController'
+            })
 
             // route for the log in page
             .when('/logIn', {
@@ -264,7 +269,7 @@
                 });
 
         };
-
+        
         //function for getting a specific book from book array and returning it
         bookFactory.getBook = function (Id) {
             for (var i in bookFactory.books) {
@@ -444,11 +449,47 @@
                 }
             }
         };
+
+
+
+        //function for placing an order
+        bookFactory.placeOrder = function (cart) {
+            console.log(cart);
+            return $http.post('/Order/AddOrder', cart)
+                .success(function (data) {
+                    //order is saved to database
+                    if (data.status === "Success") {
+                        bookFactory.message = "Success";
+                        // add the book to the book array
+                     //   bookFactory.books.push(data.addedBook);
+                    }
+                    else if (data.status === "Failure") {
+                        bookFactory.message = "   ";
+                    }
+                    else if (data.status === "DBFailure") {
+                        bookFactory.message = "Something went wrong when saving the new book, try again.";
+                        console.log(data.message);
+                    }
+                    else {
+                        // model from MVC isn't valid set the error message/messages
+                        bookFactory.message = data;
+                    }
+                })
+                .error(function (data) {
+                    console.log(data);
+                    console.log("Error");
+                });
+
+        };
+
+
+
+
         return bookFactory;
     });
 
     //  main controller with $scope injected
-    app.controller('mainController', function ($scope, $rootScope, bookFactory) {
+    app.controller('mainController', function ($scope, $rootScope, bookFactory, $location) {
         $scope.message = 'This is the main page';
 
         //setting books
@@ -468,6 +509,10 @@
                 $scope.userName = bookFactory.userName;
             }
         });
+
+        $scope.go = function (path) {
+            $location.path(path);
+        };
 
         //function for setting the array of books to the scope
         bookFactory.getBooks().then(function () {
@@ -699,6 +744,14 @@
         bookFactory.getCart()
         {
             $scope.cart = bookFactory.cart;
+
+            // check if any items exist in cart, in that case show information and buttons regarding checkout, on cart page
+            if (bookFactory.cart.length !== 0) {
+                $scope.showCheckout = true;
+            }
+            else {
+                $scope.showCheckout = false;
+            }
         };
 
         //function for getting the total amount
@@ -723,4 +776,66 @@
             $scope.totalAmount = bookFactory.totalAmount;
         };
     });
+
+
+
+    // controller for checkout
+    app.controller('checkoutController', function ($scope, bookFactory, $window, $timeout, $location) {
+        //message for checkout page
+        $scope.message = 'This is the check out page!';
+
+      //  $location.path('/register');
+
+        //function for checking out an order
+        this.placeOrder = function () {
+
+            console.log("placeorder");
+            console.log(bookFactory.cart);
+            var cart = bookFactory.cart;
+            console.log(cart);
+            bookFactory.placeOrder(cart)
+            .then(function () {
+
+                if (bookFactory.message.length !== 0) {
+                    if (bookFactory.message === "Success") {
+
+                    }
+                }
+            });
+        };
+
+       
+
+
+
+        //function for getting cart
+        bookFactory.getCart()
+        {
+            console.log(bookFactory.cart);
+            $scope.cart = bookFactory.cart;
+
+            // check if any items exist in cart, in that case show information and buttons regarding checkout, on cart page
+            //if (bookFactory.cart.length !== 0) {
+            //    $scope.showCheckout = true;
+            //}
+            //else {
+            //    $scope.showCheckout = false;
+            //}
+        };
+       
+
+
+
+
+
+
+
+
+
+
+    });
+    
+
+
+
 })();
