@@ -1,5 +1,7 @@
 ﻿(function () {
     "use strict";
+    // for cache issues
+   //  var version = "0.01";
 
     var app = angular.module('app', ['ngRoute']);
 
@@ -9,6 +11,10 @@
             // route for the home page
             .when('/', {
                 templateUrl: '/Angular/Templates/home.html',
+                // two different ways to handle cache issue
+                // templateUrl: '/Angular/Templates/home.html?' + new Date(),
+                // templateUrl: '/Angular/Templates/home.html?' + version,
+                
                 controller: 'mainController'
             })
 
@@ -18,7 +24,7 @@
                 controller: 'registerController'
             })
 
-            //route for handle people page
+            ////route for handle people page
             .when('/handlePeople', {
                 templateUrl: '/Angular/Templates/handlePeople.html',
                 controller: 'peopleController'
@@ -51,6 +57,28 @@
                 templateUrl: '/Angular/Templates/login.html',
                 controller: 'loginController'
             });
+    });
+
+
+    app.controller('userLevelController', function ($scope, $rootscope) {
+        $scope.includeFile = false;
+        console.log("userlevelcontroller");
+
+        alert("UserlevelController" + $scope.includeFile);
+
+        $rootscope.$watch(function () {
+            console.log($rootscope.userRole);
+            console.log("in watch userLevelController");
+            return $rootscope.userRole;
+        },
+        function (newValue, oldValue) {
+            if (newValue !== 0) {
+                $scope.includeFile = true;
+
+            }
+        }
+        
+        )
     });
 
     //factory for the bookstore
@@ -456,27 +484,29 @@
         bookFactory.placeOrder = function (cart) {
             console.log(cart);
             return $http.post('/Order/AddOrder', cart)
-                .success(function (data) {
+                .success(function (response) {
+                    console.log(response.status);
+                    console.log(response.data);
                     //order is saved to database
-                    if (data.status === "Success") {
+                    if (response.status === "Success") {
                         bookFactory.message = "Success";
                         // add the book to the book array
                      //   bookFactory.books.push(data.addedBook);
                     }
-                    else if (data.status === "Failure") {
-                        bookFactory.message = "   ";
+                    else if (response.status === "Failure") {
+                        bookFactory.message = response.data;
                     }
-                    else if (data.status === "DBFailure") {
+                    else if (response.status === "DBFailure") {
                         bookFactory.message = "Something went wrong when saving the new book, try again.";
-                        console.log(data.message);
+                        console.log(response.data);
                     }
                     else {
                         // model from MVC isn't valid set the error message/messages
-                        bookFactory.message = data;
+                        bookFactory.message = response.data;
                     }
                 })
-                .error(function (data) {
-                    console.log(data);
+                .error(function (response) {
+                    console.log(response);
                     console.log("Error");
                 });
 

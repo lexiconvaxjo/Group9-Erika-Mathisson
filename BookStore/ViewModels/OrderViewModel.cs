@@ -26,4 +26,16 @@ namespace BookStore.ViewModels
         [Required]
         public int NoOfItem { get; set; }
     }
+
+    public class AddedOrderViewModel
+    {
+        [Key]
+        public int Id { get; set; }
+        [Required]
+        public DateTime OrderDate { get; set; }
+        [Required]
+        public User UserBuyer { get; set; }
+
+    }
+
 }

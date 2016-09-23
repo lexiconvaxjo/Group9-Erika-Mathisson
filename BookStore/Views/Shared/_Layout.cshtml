@@ -40,7 +40,7 @@
                     @*@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {*@
                     <li ng-if="isLoggedIn && role == 'Admin'"><a href="#/handlePeople"><font color="green"><span class="glyphicon glyphicon-user"></span> Handle people</font></a></li>
-                 @*   <li ng-if="isLoggedIn && role == 'User'"><a href="#/myPages"><font color="green"><span class="glyphicon glyphicon-user"></span> My pages</font></a></li>*@
+                    @*   <li ng-if="isLoggedIn && role == 'User'"><a href="#/myPages"><font color="green"><span class="glyphicon glyphicon-user"></span> My pages</font></a></li>*@
 
                     <li ng-if="isLoggedIn && role == 'User'" class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown"><font color="green"><span class="glyphicon glyphicon-user"></span> My pages </font><span class="caret"></span></a>
@@ -94,5 +94,19 @@
     <script src="~/Scripts/angular.min.js"></script>
     <script src="~/Scripts/angular-route.min.js"></script>
     <script src="~/Angular/app.js"></script>
+
+  @* @RenderSection("Scripts", false);*@
+
+
+    @if(User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+    {        
+        <script src="~/Angular/adminApp.js"></script>       
+    }
+
+    @if(User.Identity.IsAuthenticated && User.IsInRole("User"))
+    {
+        <script src ="~/Angular/userApp.js"></script>
+    }
+
 </body>
 </html>

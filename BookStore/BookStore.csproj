@@ -137,6 +137,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Angular\adminApp.js" />
     <Content Include="Angular\app.js" />
     <Content Include="Angular\Templates\cart.html" />
     <Content Include="Angular\Templates\changePassword.html" />
@@ -145,6 +146,7 @@
     <Content Include="Angular\Templates\Img\books2.jpg" />
     <Content Include="Angular\Templates\handlePeople.html" />
     <Content Include="Angular\Templates\myPages.html" />
+    <Content Include="Angular\userApp.js" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />

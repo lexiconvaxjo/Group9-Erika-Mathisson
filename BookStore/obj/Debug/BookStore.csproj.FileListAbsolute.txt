@@ -146,3 +146,4 @@ C:\Repos\Utbildning\Lexicon\BookStore\obj\Debug\BookStore.csproj.GenerateResourc
 C:\Repos\Utbildning\Lexicon\BookStore\obj\Debug\BookStore.dll
 C:\Repos\Utbildning\Lexicon\BookStore\obj\Debug\BookStore.pdb
 C:\Repos\Utbildning\Lexicon\BookStore\obj\Debug\BookStore.Migrations.updatedBook.resources
+C:\Repos\Utbildning\Lexicon\BookStore\obj\Debug\BookStore.csprojResolveAssemblyReference.cache

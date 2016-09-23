@@ -65,10 +65,7 @@ namespace BookStore.Controllers
         {
             return View();
         }
-
-
-
-
+        
         [Authorize]
         [HttpPost]
         public JsonResult AddOrder(List<OrderViewModel> addOrder)
@@ -78,14 +75,16 @@ namespace BookStore.Controllers
                 DB context = new DB();
                 // fetch username
                 var buyer = User.Identity.Name;
-              
-                var orderRows = new List<OrderRow>();              
+
+                var orderRows = new List<OrderRow>();
 
                 var user = context.Users.FirstOrDefault(x => x.UserName == buyer);
 
                 for (int i = 0; i < addOrder.Count; i++)
                 {
-                    var currentBook = context.Books.FirstOrDefault(x => x.Id == addOrder[i].Id);                   
+                    var bookId = addOrder[i].Id;
+                    //var currentBook = context.Books.FirstOrDefault(x => x.Id == addOrder[i].Id);  
+                    var currentBook = context.Books.FirstOrDefault(x => x.Id == bookId);
 
                     // create a new OrderRow
                     var addRow = new OrderRow
@@ -112,38 +111,46 @@ namespace BookStore.Controllers
 
                 try
                 {
-                    context.Orders.Add(newOrder);
+                    context.Configuration.ProxyCreationEnabled = false;
+                    var test = context.Orders.Add(newOrder);
                     context.SaveChanges();
 
-
-                    //using (context)
-                    //{
-                    //    var order = context.Orders
-                    //        .Where(x => x.UserBuyer == user);
-
-
-
-
-                    //}
-
+                    //var addedOrder = from a in context.Orders
+                    //                 where a.UserBuyer == user
+                    //                 where a.OrderDate == orderDate
+                    //                 select a;
+                    
                     //todo check this query
-                    var addedOrder = context.Orders
-                        .Where(x => x.UserBuyer == user && x.OrderDate == orderDate);
+                    //var addedOrder = context.Orders
+                    //    .Where(x => x.UserBuyer == user && x.OrderDate == orderDate);                    
 
-                    return Json(new { status = "Success" });
+                    var orderTest = context.Orders.FirstOrDefault(x => x.Id == test.Id);
+
+                    AddedOrderViewModel addOrderVM = new AddedOrderViewModel();
+
+                    addOrderVM.Id = orderTest.Id;
+                    addOrderVM.OrderDate = orderTest.OrderDate;                    
+                    addOrderVM.UserBuyer = orderTest.UserBuyer;
+                    
+                    return Json(new { status = "Success", data = addOrderVM });
                 }
                 catch (Exception e)
                 {
                     //something went wrong when saving to database, send info to page
-                    return Json(new { status = "DBFailure", message = e });
+                    return Json(new { status = "DBFailure", data = e });
                 }
 
 
             }
+            else
+            {
+                // modelstate isn't valid, take all errors and save in a string, send to page
+                var message = string.Join(" | ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
 
-            return Json(new { status = "Failure" });
-
-
+                return Json(new { status = "Failure", data = message });
+            }
         }
     }
 }
