@@ -142,6 +142,7 @@
     <Content Include="Angular\Templates\cart.html" />
     <Content Include="Angular\Templates\changePassword.html" />
     <Content Include="Angular\Templates\checkout.html" />
+    <Content Include="Angular\Templates\handleBooks.html" />
     <Content Include="Angular\Templates\Img\books.jpeg" />
     <Content Include="Angular\Templates\Img\books2.jpg" />
     <Content Include="Angular\Templates\handlePeople.html" />

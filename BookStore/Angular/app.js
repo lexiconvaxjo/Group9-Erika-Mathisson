@@ -25,61 +25,62 @@
             })
 
             ////route for handle people page
-            .when('/handlePeople', {
-                templateUrl: '/Angular/Templates/handlePeople.html',
-                controller: 'peopleController'
-            })
+            //.when('/handlePeople', {
+            //    templateUrl: '/Angular/Templates/handlePeople.html',
+            //    controller: 'peopleController'
+            //})
 
-            //route for a users my pages
-            .when('/myPages', {
-                templateUrl: '/Angular/Templates/myPages.html',
-                controller: 'myPagesController'
-            })
+            ////route for a users my pages
+            //.when('/myPages', {
+            //    templateUrl: '/Angular/Templates/myPages.html',
+            //    controller: 'myPagesController'
+            //})
 
-            //route for changeing password
-            .when('/changePassword', {
-                templateUrl: '/Angular/Templates/changePassword.html',
-                controller: 'changePassWordController'
-            })
+            ////route for changeing password
+            //.when('/changePassword', {
+            //    templateUrl: '/Angular/Templates/changePassword.html',
+            //    controller: 'changePassWordController'
+            //})
             //route for the cart page
             .when('/cart', {
                 templateUrl: '/Angular/Templates/cart.html',
                 controller: 'cartController'
             })
-            //route for check out page
-            .when('/checkout', {
-                templateUrl: '/Angular/Templates/checkout.html',
-                controller: 'checkoutController'
-            })
+            ////route for check out page
+            //.when('/checkout', {
+            //    templateUrl: '/Angular/Templates/checkout.html',
+            //    controller: 'checkoutController'
+            //})
 
             // route for the log in page
             .when('/logIn', {
                 templateUrl: '/Angular/Templates/login.html',
                 controller: 'loginController'
-            });
+            })
+        ;
     });
 
 
-    app.controller('userLevelController', function ($scope, $rootscope) {
-        $scope.includeFile = false;
-        console.log("userlevelcontroller");
+    //app.controller('userLevelController', function ($scope, $rootscope) {
+    //    $scope.includeFile = false;
+    //    console.log("userlevelcontroller");
 
-        alert("UserlevelController" + $scope.includeFile);
+    //    alert("UserlevelController" + $scope.includeFile);
 
-        $rootscope.$watch(function () {
-            console.log($rootscope.userRole);
-            console.log("in watch userLevelController");
-            return $rootscope.userRole;
-        },
-        function (newValue, oldValue) {
-            if (newValue !== 0) {
-                $scope.includeFile = true;
+    //    $rootscope.$watch(function () {
+    //        console.log($rootscope.userRole);
+    //        console.log("in watch userLevelController");
+    //        return $rootscope.userRole;
+    //    },
+    //    function (newValue, oldValue) {
+    //        if (newValue !== 0) {
+    //            $scope.includeFile = true;
 
-            }
-        }
+    //        }
+    //    }
         
-        )
-    });
+    //    )
+    //});
 
     //factory for the bookstore
     app.factory('bookFactory', function ($http, $window, $rootScope, $timeout) {
@@ -87,12 +88,12 @@
         var bookFactory = {};
         // for setting message to pages
         bookFactory.message = "";
-        //for registered people
-        bookFactory.people = [];
+        ////for registered people
+     //   bookFactory.people = [];
         // for added books
         bookFactory.books = [];
-        // for person
-        bookFactory.myPerson = {};
+        //// for person
+      //  bookFactory.myPerson = {};
         // if user is logged in
         bookFactory.isAuthorized = false;
         // what role the user has
@@ -110,6 +111,7 @@
                 bookFactory.isAuthorized = true;
                 //setting what type of role the user has
                 bookFactory.userRole = response.data.role;
+                console.log(bookFactory.userRole);
                 //setting the username for the user
                 bookFactory.userName = response.data.userName;
             }
@@ -174,88 +176,88 @@
             });
         };
 
-        //function for getting people from database
-        bookFactory.getPeople = function () {
-            return $http.get('/Person/GetPeople')
-            .success(function (data) {
-                //people fetched ok set the returned data to the array
-                bookFactory.people = data;
-            })
-            .error(function () {
-                // setting error message
-                bookFactory.message = "Something went wrong...";
-            });
-        };
+        ////function for getting people from database
+        //bookFactory.getPeople = function () {
+        //    return $http.get('/Person/GetPeople')
+        //    .success(function (data) {
+        //        //people fetched ok set the returned data to the array
+        //        bookFactory.people = data;
+        //    })
+        //    .error(function () {
+        //        // setting error message
+        //        bookFactory.message = "Something went wrong...";
+        //    });
+        //};
 
-        //function for getting information about user
-        bookFactory.getPerson = function () {
-            return $http.post('/Person/GetPerson')
-                .success(function (data) {
-                    bookFactory.myPerson = data;
-                })
-                .error(function (data) {
-                    console.log(data);
-                    console.log("Error");
-                });
-        };
+        ////function for getting information about user
+        //bookFactory.getPerson = function () {
+        //    return $http.post('/Person/GetPerson')
+        //        .success(function (data) {
+        //            bookFactory.myPerson = data;
+        //        })
+        //        .error(function (data) {
+        //            console.log(data);
+        //            console.log("Error");
+        //        });
+        //};
 
-        //function for getting a specific person from people array and returning it
-        bookFactory.get = function (Id) {
-            for (var i in bookFactory.people) {
-                if (bookFactory.people[i].Id === Id) {
-                    return bookFactory.people[i];
-                }
-            }
-        };
+        ////function for getting a specific person from people array and returning it
+        //bookFactory.get = function (Id) {
+        //    for (var i in bookFactory.people) {
+        //        if (bookFactory.people[i].Id === Id) {
+        //            return bookFactory.people[i];
+        //        }
+        //    }
+        //};
 
-        //function for editing an existing person
-        bookFactory.editPerson = function (person) {
-            return $http.post('/Person/EditPerson', person)
-            .success(function (data) {
-                bookFactory.message = "";
-                // something went wrong set error message to page
-                if (data.status === "Failure") {
-                    bookFactory.message = data.message;
-                }
-                else {
-                    if (bookFactory.people.length != 0) {
-                        //find the person using id and update it
-                        for (var i in bookFactory.people) {
-                            if (bookFactory.people[i].Id == person.Id) {
-                                bookFactory.people[i] = person;
-                            }
-                        }
-                    }
-                    else {
-                        bookFactory.myPerson = person;
-                        bookFactory.message = "Information updated ok!";
-                    }
-                }
-            })
-            .error(function () {
-                console.log("Error");
-            });
-        };
+        ////function for editing an existing person
+        //bookFactory.editPerson = function (person) {
+        //    return $http.post('/Person/EditPerson', person)
+        //    .success(function (data) {
+        //        bookFactory.message = "";
+        //        // something went wrong set error message to page
+        //        if (data.status === "Failure") {
+        //            bookFactory.message = data.message;
+        //        }
+        //        else {
+        //            if (bookFactory.people.length != 0) {
+        //                //find the person using id and update it
+        //                for (var i in bookFactory.people) {
+        //                    if (bookFactory.people[i].Id == person.Id) {
+        //                        bookFactory.people[i] = person;
+        //                    }
+        //                }
+        //            }
+        //            else {
+        //                bookFactory.myPerson = person;
+        //                bookFactory.message = "Information updated ok!";
+        //            }
+        //        }
+        //    })
+        //    .error(function () {
+        //        console.log("Error");
+        //    });
+        //};
 
-        // function for changeing a users password
-        bookFactory.changePassword = function (change) {
-            return $http.post('/Person/ChangePassword', change)
-            .success(function (data) {
-                //something went wrong send info to page
-                if (data.status === "Failure") {
-                    bookFactory.message = data.message;
-                }
-                    //persons password is changed ok send info to page
-                else if (data.status === "Success") {
-                    bookFactory.message = "Password changed ok";
-                }
-            })
-                //something went wrong
-            .error(function (data) {
-                console.log("Error");
-                console.log(data);
-            });
-        };
+        //// function for changeing a users password
+        //bookFactory.changePassword = function (change) {
+        //    return $http.post('/Person/ChangePassword', change)
+        //    .success(function (data) {
+        //        //something went wrong send info to page
+        //        if (data.status === "Failure") {
+        //            bookFactory.message = data.message;
+        //        }
+        //            //persons password is changed ok send info to page
+        //        else if (data.status === "Success") {
+        //            bookFactory.message = "Password changed ok";
+        //        }
+        //    })
+        //        //something went wrong
+        //    .error(function (data) {
+        //        console.log("Error");
+        //        console.log(data);
+        //    });
+        //};
 
         //function for getting books from database
         bookFactory.getBooks = function () {
@@ -398,15 +400,17 @@
 
         // function for adding selected book to the cart
         bookFactory.addBookToCart = function (Id) {
+            console.log(JSON.parse(sessionStorage.getItem('cart')));
             // variable for checking if item exist in cart
             var exist = false;
             // loop through the cart and check if added book already exist in cart
             for (var j in bookFactory.cart) {
                 if (bookFactory.cart[j].Id === Id) {
+                    console.log(bookFactory.cart[j].NoOfItem);
                     //the added book already exist in cart
                     exist = true;
-                    //check is NoOfItem is undefined
-                    if (bookFactory.cart[j].NoOfItem === undefined) {
+                    //check is NoOfItem is undefined                   
+                    if (bookFactory.cart[j].NoOfItem === undefined) {                        
                         var bookToAdd = bookFactory.cart[j];
                         // add the parameter NoOfItem to the book who should be added to cart, 
                         // set the parameter to value 1 since it's the first added book of that type
@@ -417,12 +421,16 @@
                         sessionStorage.setItem('cart', JSON.stringify(bookFactory.cart));
                     }
                     else {
-                        // the added book already exist in cart update parameter NoOfItem and set the cart to session
-                        bookFactory.cart[j].NoOfItem = bookFactory.cart[j].NoOfItem + 1;
+                        // the added book already exist in cart update parameter NoOfItem and set the cart to session                       
+                        var noOfItem = bookFactory.cart[j].NoOfItem;                       
+                        noOfItem = parseInt(noOfItem);
+                        noOfItem = noOfItem + 1;                       
+                        bookFactory.cart[j].NoOfItem = noOfItem;                       
                         sessionStorage.setItem('cart', JSON.stringify(bookFactory.cart));
                     }
                 }
             }
+            console.log(JSON.parse(sessionStorage.getItem('cart')));
             // the book doesn't exist in cart
             if (exist === false) {
                 // loop through the list of books to find the book who should be added to cart
@@ -438,6 +446,7 @@
                     }
                 }
             }
+            console.log(JSON.parse(sessionStorage.getItem('cart')));
         };
 
         // function for removing a book from a cart
@@ -480,37 +489,37 @@
 
 
 
-        //function for placing an order
-        bookFactory.placeOrder = function (cart) {
-            console.log(cart);
-            return $http.post('/Order/AddOrder', cart)
-                .success(function (response) {
-                    console.log(response.status);
-                    console.log(response.data);
-                    //order is saved to database
-                    if (response.status === "Success") {
-                        bookFactory.message = "Success";
-                        // add the book to the book array
-                     //   bookFactory.books.push(data.addedBook);
-                    }
-                    else if (response.status === "Failure") {
-                        bookFactory.message = response.data;
-                    }
-                    else if (response.status === "DBFailure") {
-                        bookFactory.message = "Something went wrong when saving the new book, try again.";
-                        console.log(response.data);
-                    }
-                    else {
-                        // model from MVC isn't valid set the error message/messages
-                        bookFactory.message = response.data;
-                    }
-                })
-                .error(function (response) {
-                    console.log(response);
-                    console.log("Error");
-                });
+        ////function for placing an order
+        //bookFactory.placeOrder = function (cart) {
+        //    console.log(cart);
+        //    return $http.post('/Order/AddOrder', cart)
+        //        .success(function (response) {
+        //            console.log(response.status);
+        //            console.log(response.data);
+        //            //order is saved to database
+        //            if (response.status === "Success") {
+        //                bookFactory.message = "Success";
+        //                // add the book to the book array
+        //             //   bookFactory.books.push(data.addedBook);
+        //            }
+        //            else if (response.status === "Failure") {
+        //                bookFactory.message = response.data;
+        //            }
+        //            else if (response.status === "DBFailure") {
+        //                bookFactory.message = "Something went wrong when saving the new book, try again.";
+        //                console.log(response.data);
+        //            }
+        //            else {
+        //                // model from MVC isn't valid set the error message/messages
+        //                bookFactory.message = response.data;
+        //            }
+        //        })
+        //        .error(function (response) {
+        //            console.log(response);
+        //            console.log("Error");
+        //        });
 
-        };
+        //};
 
 
 
@@ -525,7 +534,7 @@
         //setting books
         $scope.books = bookFactory.books;
 
-        // book from ng-model
+        //// book from ng-model
         $scope.addbook = {};
 
         // checking and setting if user is logged in and what role the user has 
@@ -546,7 +555,9 @@
 
         //function for setting the array of books to the scope
         bookFactory.getBooks().then(function () {
+           
             $scope.books = bookFactory.books;
+            console.log(bookFactory.books);
         });
 
         //function for adding or edit a book
@@ -624,92 +635,92 @@
         };
     });
 
-    //controller for listing existing people
-    app.controller('peopleController', function ($scope, $window, bookFactory) {
-        $scope.message = 'This is the handle people page!';
+    ////controller for listing existing people
+    //app.controller('peopleController', function ($scope, $window, bookFactory) {
+    //    $scope.message = 'This is the handle people page!';
 
-        //setting people
-        $scope.people = bookFactory.people;
+    //    //setting people
+    //    $scope.people = bookFactory.people;
 
-        $scope.showForm = false;
+    //    $scope.showForm = false;
 
-        //function for setting the array of people to the scope
-        bookFactory.getPeople().then(function () {
-            $scope.people = bookFactory.people;
-        });
+    //    //function for setting the array of people to the scope
+    //    bookFactory.getPeople().then(function () {
+    //        $scope.people = bookFactory.people;
+    //    });
 
-        //function for copying information about a specific person and paste the information to the form 
-        this.edit = function (Id) {
-            $scope.person = angular.copy(bookFactory.get(Id));
-            $scope.showForm = true;
-        };
+    //    //function for copying information about a specific person and paste the information to the form 
+    //    this.edit = function (Id) {
+    //        $scope.person = angular.copy(bookFactory.get(Id));
+    //        $scope.showForm = true;
+    //    };
 
-        //function for saving a person
-        this.savePerson = function savePerson(person) {
-            //getting person from scope
-            var person = $scope.person;
-            bookFactory
-                .editPerson(person)
-                .then(function () {
-                    //check if any message is returned and set it to the status scope
-                    if (bookFactory.message.length != 0) {
-                        $scope.statusMessage = bookFactory.message;
-                    }
-                    else {
-                        $scope.people = bookFactory.people;
-                        $scope.showForm = false;
-                    }
-                });
-            //  }
-        }
-    });
+    //    //function for saving a person
+    //    this.savePerson = function savePerson(person) {
+    //        //getting person from scope
+    //        var person = $scope.person;
+    //        bookFactory
+    //            .editPerson(person)
+    //            .then(function () {
+    //                //check if any message is returned and set it to the status scope
+    //                if (bookFactory.message.length != 0) {
+    //                    $scope.statusMessage = bookFactory.message;
+    //                }
+    //                else {
+    //                    $scope.people = bookFactory.people;
+    //                    $scope.showForm = false;
+    //                }
+    //            });
+    //        //  }
+    //    }
+    //});
 
-    //controller for listing a users myPages
-    app.controller('myPagesController', function ($scope, $window, bookFactory) {
-        $scope.message = 'This is the my pages page!';
+    ////controller for listing a users myPages
+    //app.controller('myPagesController', function ($scope, $window, bookFactory) {
+    //    $scope.message = 'This is the my pages page!';
 
-        //setting person to $scope
-        $scope.myPerson = bookFactory.myPerson;
+    //    //setting person to $scope
+    //    $scope.myPerson = bookFactory.myPerson;
 
-        // function for getting the logged in person
-        bookFactory.getPerson().then(function () {
-            $scope.myPerson = bookFactory.myPerson;
-        });
+    //    // function for getting the logged in person
+    //    bookFactory.getPerson().then(function () {
+    //        $scope.myPerson = bookFactory.myPerson;
+    //    });
 
-        //function for updating a person
-        this.updatePerson = function updatePerson(person) {
-            //getting person from scope
-            var person = $scope.myPerson;
-            bookFactory
-                .editPerson(person)
-                .then(function () {
-                    //check if any message is returned and set it to the status scope
-                    if (bookFactory.message.length != 0) {
-                        $scope.statusMessage = bookFactory.message;
-                    }
-                    else {
-                        $scope.myPerson = bookFactory.myPerson;
-                        $scope.statusMessage = bookFactory.message;
-                    }
-                });
-            //  }
-        }
-    });
+    //    //function for updating a person
+    //    this.updatePerson = function updatePerson(person) {
+    //        //getting person from scope
+    //        var person = $scope.myPerson;
+    //        bookFactory
+    //            .editPerson(person)
+    //            .then(function () {
+    //                //check if any message is returned and set it to the status scope
+    //                if (bookFactory.message.length != 0) {
+    //                    $scope.statusMessage = bookFactory.message;
+    //                }
+    //                else {
+    //                    $scope.myPerson = bookFactory.myPerson;
+    //                    $scope.statusMessage = bookFactory.message;
+    //                }
+    //            });
+    //        //  }
+    //    }
+    //});
 
-    //controller for changeing a users password
-    app.controller('changePassWordController', function ($scope, $window, bookFactory) {
-        //message for change password page
-        $scope.message = 'This is change password page';
+    ////controller for changeing a users password
+    //app.controller('changePassWordController', function ($scope, $window, bookFactory) {
+    //    //message for change password page
+    //    $scope.message = 'This is change password page';
 
-        // function for changing a users password
-        this.changePassword = function () {
-            bookFactory.changePassword($scope.change)
-            .then(function () {
-                $scope.statusMessage = bookFactory.message;
-                $scope.change = "";
-            })
-        }
-    });
+    //    // function for changing a users password
+    //    this.changePassword = function () {
+    //        bookFactory.changePassword($scope.change)
+    //        .then(function () {
+    //            $scope.statusMessage = bookFactory.message;
+    //            $scope.change = "";
+    //        })
+    //    }
+    //});
 
     // controller for handling log in
     app.controller('loginController', function ($scope, $window, bookFactory, $rootScope, $timeout) {
@@ -809,49 +820,49 @@
 
 
 
-    // controller for checkout
-    app.controller('checkoutController', function ($scope, bookFactory, $window, $timeout, $location) {
-        //message for checkout page
-        $scope.message = 'This is the check out page!';
+    //// controller for checkout
+    //app.controller('checkoutController', function ($scope, bookFactory, $window, $timeout, $location) {
+    //    //message for checkout page
+    //    $scope.message = 'This is the check out page!';
 
-      //  $location.path('/register');
+    //  //  $location.path('/register');
 
-        //function for checking out an order
-        this.placeOrder = function () {
+    //    //function for checking out an order
+    //    this.placeOrder = function () {
 
-            console.log("placeorder");
-            console.log(bookFactory.cart);
-            var cart = bookFactory.cart;
-            console.log(cart);
-            bookFactory.placeOrder(cart)
-            .then(function () {
+    //        console.log("placeorder");
+    //        console.log(bookFactory.cart);
+    //        var cart = bookFactory.cart;
+    //        console.log(cart);
+    //        bookFactory.placeOrder(cart)
+    //        .then(function () {
 
-                if (bookFactory.message.length !== 0) {
-                    if (bookFactory.message === "Success") {
+    //            if (bookFactory.message.length !== 0) {
+    //                if (bookFactory.message === "Success") {
 
-                    }
-                }
-            });
-        };
+    //                }
+    //            }
+    //        });
+    //    };
 
        
 
 
 
-        //function for getting cart
-        bookFactory.getCart()
-        {
-            console.log(bookFactory.cart);
-            $scope.cart = bookFactory.cart;
+        ////function for getting cart
+        //bookFactory.getCart()
+        //{
+        //    console.log(bookFactory.cart);
+        //    $scope.cart = bookFactory.cart;
 
-            // check if any items exist in cart, in that case show information and buttons regarding checkout, on cart page
-            //if (bookFactory.cart.length !== 0) {
-            //    $scope.showCheckout = true;
-            //}
-            //else {
-            //    $scope.showCheckout = false;
-            //}
-        };
+        //     //check if any items exist in cart, in that case show information and buttons regarding checkout, on cart page
+        //    if (bookFactory.cart.length !== 0) {
+        //        $scope.showCheckout = true;
+        //    }
+        //    else {
+        //        $scope.showCheckout = false;
+        //    }
+        //};
        
 
 
@@ -863,7 +874,7 @@
 
 
 
-    });
+    //});
     
 
 

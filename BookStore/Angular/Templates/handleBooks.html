@@ -1,0 +1,75 @@
+﻿<!-- handleBooks.html -->
+
+<h1>Handle books Page</h1>
+
+<p>{{ message }}</p>
+
+
+
+<h1 ng-if="isLoggedIn && role == 'Admin'"> Logged in Admin</h1>
+<h1 ng-if="!isLoggedIn && role == 'Admin'"> Not Logged in Admin</h1>
+<h1 ng-if="!isLoggedIn && role == 'User'"> Not Logged in User</h1>
+<h1 ng-if="isLoggedIn && role == 'User'"> Logged in User</h1>
+
+<div ng-controller="handleBooksController as hbc">
+    <form ng-if="isLoggedIn && role == 'Admin'" class="form-horizontal" name="addBook" method="post" novalidate>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Title: </label>
+            <input ng-model="addbook.Title" class="form-control" ng-minlength="1" ng-maxlength="40" ng-required="true" name="Title" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Author: </label>
+            <input ng-model="addbook.Author" class="form-control" ng-minlength="1" ng-maxlength="40" ng-required="true" name="Author" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Description: </label>
+            <input ng-model="addbook.Description" class="form-control" ng-minlength="5" ng-maxlength="100" ng-required="true" name="Description" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">ISBN: </label>
+            <input ng-model="addbook.ISBN" class="form-control" type="number" ng-minlength="10" ng-maxlength="13" ng-required="true" name="ISBN" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Price: </label>
+            <input ng-model="addbook.Price" class="form-control" ng-minlength="1" ng-maxlength="13" name="Price" />
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">Number in stock: </label>
+            <input ng-model="addbook.NumberInStock" class="form-control" type="number" ng-minlength="1" ng-maxlength="10" ng-required="true" name="NumberInStock" />
+        </div>
+        <div class="form-group">
+            <input type="hidden" ng-model="addbook.Id" />
+        </div>
+        <button type="submit" ng-disabled="addBook.$invalid" ng-click="hbc.saveBook()" class="btn btn-success">Submit</button>
+        <button type="reset" class="btn btn-default">Reset</button>
+    </form>
+    <font color="red"> {{statusMessage}} </font>
+    <br />
+
+    <div class="col-xs-12">
+        <div class="col-xs-2" style="font-size:large">Title</div>
+        <div class="col-xs-2" style="font-size:large">Author</div>
+        <div class="col-xs-2" style="font-size:large">Description</div>
+        <div class="col-xs-2" style="font-size:large">ISBN</div>
+        <div class="col-xs-2" style="font-size:large">Price</div>
+        <div class="col-xs-2" style="font-size:large">Action</div>
+    </div>
+
+    <div>
+        <br />
+        <div class="col-xs-12" ng-repeat="book in books |filter:search track by $index">
+            <div class="col-xs-2">{{book.Title}}</div>
+            <div class="col-xs-2">{{book.Author}}</div>
+            <div class="col-xs-2">{{book.Description}}</div>
+            <div class="col-xs-2">{{book.ISBN}}</div>
+            <div class="col-xs-2">{{book.Price}}</div>
+
+            <div class="col-xs-2">
+                <a href="#/" ng-click="hbc.addBookToCart(book.Id)">add to cart</a>
+                <a href="#/" ng-if="isLoggedIn && role == 'Admin'" ng-click="main.edit(book.Id)"> | edit</a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
