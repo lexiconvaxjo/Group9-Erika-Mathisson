@@ -7,6 +7,7 @@ using System.Web;
 
 namespace BookStore.ViewModels
 {
+    // viewmodel for an order
     public class OrderViewModel
     {
         public int Id { get; set; }
@@ -27,15 +28,17 @@ namespace BookStore.ViewModels
         public int NoOfItem { get; set; }
     }
 
-    public class AddedOrderViewModel
+    // view model for getting orderhistory for a user
+    public class GetOrderHistoryViewModel
     {
-        [Key]
-        public int Id { get; set; }
-        [Required]
-        public DateTime OrderDate { get; set; }
-        [Required]
-        public User UserBuyer { get; set; }
-
+        public string UserName { get; set; }
     }
 
+    // view model for deleting a row in an order
+    public class DeleteRowViewModel
+    {
+        public int OrderId { get; set; }
+
+        public int RowId { get; set; }
+    }
 }

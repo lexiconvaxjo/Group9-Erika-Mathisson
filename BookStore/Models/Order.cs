@@ -19,6 +19,5 @@ namespace BookStore.Models
         public User UserBuyer { get; set; }
         [Required]
         public List<OrderRow> OrderRows { get; set; }
-
     }
 }

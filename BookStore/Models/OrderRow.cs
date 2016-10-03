@@ -12,9 +12,7 @@ namespace BookStore.Models
     public class OrderRow
     {
         [Key]
-        public int Id { get; set; }
-        [Required]
-        public Order order { get; set; }
+        public int Id { get; set; }       
         [Required]
         public Book BookPurchase { get; set; }
         [Required]

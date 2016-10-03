@@ -6,70 +6,61 @@ using System.Web;
 
 namespace BookStore.ViewModels
 {
+    // viewmodel for register a user
     public class RegisterUserViewModel
     {
         [Required]
         [MinLength(4)]
         [MaxLength(25)]
-        [Display(Name = "User name: ")]
         public string UserName { get; set; }
 
         [Required]
         [MinLength(4)]
-        [MaxLength(25)]
-        [Display(Name ="First name: ")]
+        [MaxLength(25)]        
         public string FirstName { get; set; }
 
         [Required]
         [MinLength(4)]
-        [MaxLength(25)]
-        [Display(Name ="Last name: ")]
+        [MaxLength(25)]       
         public string LastName { get; set; }
 
         [Required]
         [MinLength(4)]
-        [MaxLength(25)]
-        [Display(Name ="Password: ")]
+        [MaxLength(25)]       
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [Required]
         [MinLength(4)]
-        [MaxLength(25)]
-        [Display(Name ="Confirm password: ")]
+        [MaxLength(25)]       
         [DataType(DataType.Password)]
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
 
         [Required]
         [MinLength(7)]
-        [MaxLength(30)]
-        [Display(Name ="Email: ")]
+        [MaxLength(30)]       
         [EmailAddress]
         public string Email { get; set; }
 
         [Required]
         [MinLength(4)]
-        [MaxLength(25)]
-        [Display(Name ="Address: ")]
+        [MaxLength(25)]        
         public string Address { get; set; }
 
         [Required]
         [MinLength(4)]
-        [MaxLength(25)]
-        [Display(Name ="City: ")]
+        [MaxLength(25)]       
         public string City { get; set; }
 
         [Required]
         [MinLength(5)]
-        [MaxLength(10)]
-        [Display(Name ="Zip code: ")]
+        [MaxLength(10)]      
         public string ZipCode { get; set; }
 
         [Required]
         [MinLength(9)]
-        [MaxLength(15)]
-        [Display(Name ="Phone number: ")]
+        [MaxLength(15)]       
         public string PhoneNumber { get; set; }
 
         public bool Admin { get; set; }

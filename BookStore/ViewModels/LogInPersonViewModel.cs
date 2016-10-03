@@ -6,6 +6,7 @@ using System.Web;
 
 namespace BookStore.ViewModels
 {
+    // viewmodel for logging in a person
     public class LogInPersonViewModel
     {
         [Required]

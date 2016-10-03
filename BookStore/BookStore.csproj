@@ -143,10 +143,13 @@
     <Content Include="Angular\Templates\changePassword.html" />
     <Content Include="Angular\Templates\checkout.html" />
     <Content Include="Angular\Templates\handleBooks.html" />
+    <Content Include="Angular\Templates\handleUserOrder.html" />
     <Content Include="Angular\Templates\Img\books.jpeg" />
     <Content Include="Angular\Templates\Img\books2.jpg" />
     <Content Include="Angular\Templates\handlePeople.html" />
     <Content Include="Angular\Templates\myPages.html" />
+    <Content Include="Angular\Templates\orderHistory.html" />
+    <Content Include="Angular\Templates\showReceipt.html" />
     <Content Include="Angular\userApp.js" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -970,21 +973,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201609071157020_initial.cs" />
-    <Compile Include="Migrations\201609071157020_initial.Designer.cs">
-      <DependentUpon>201609071157020_initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201609071247558_addedIdentityUser.cs" />
-    <Compile Include="Migrations\201609071247558_addedIdentityUser.Designer.cs">
-      <DependentUpon>201609071247558_addedIdentityUser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201609090816368_addedTablesForDatabase.cs" />
-    <Compile Include="Migrations\201609090816368_addedTablesForDatabase.Designer.cs">
-      <DependentUpon>201609090816368_addedTablesForDatabase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201609160844386_updatedBook.cs" />
-    <Compile Include="Migrations\201609160844386_updatedBook.Designer.cs">
-      <DependentUpon>201609160844386_updatedBook.cs</DependentUpon>
+    <Compile Include="Migrations\201609280938339_init.cs" />
+    <Compile Include="Migrations\201609280938339_init.Designer.cs">
+      <DependentUpon>201609280938339_init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Book.cs" />
@@ -1022,17 +1013,8 @@
     <Folder Include="Views\Person\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201609071157020_initial.resx">
-      <DependentUpon>201609071157020_initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201609071247558_addedIdentityUser.resx">
-      <DependentUpon>201609071247558_addedIdentityUser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201609090816368_addedTablesForDatabase.resx">
-      <DependentUpon>201609090816368_addedTablesForDatabase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201609160844386_updatedBook.resx">
-      <DependentUpon>201609160844386_updatedBook.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609280938339_init.resx">
+      <DependentUpon>201609280938339_init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -9,6 +9,7 @@ namespace BookStore.Controllers
 {
     public class BookController : Controller
     {
+        DB context = new DB();
         // GET: Book
         public ActionResult Index()
         {
@@ -20,8 +21,7 @@ namespace BookStore.Controllers
         /// </summary>
         /// <returns>Json</returns>
         public JsonResult GetBooks()
-        {
-            DB context = new DB();
+        {           
             // fetch books from database
             List<Book> books = context.Books.ToList();
             // return books, allowing the method to be HttpGet
@@ -39,9 +39,7 @@ namespace BookStore.Controllers
         public JsonResult AddBook([Bind(Include = "Title, Author, ISBN, Description, Price, NumberInStock")]Book book)
         {
             if (ModelState.IsValid)
-            {
-                // create a new db context
-                DB context = new DB();
+            {               
                 // check if added entered book already exists in database
                 var checkBook = context.Books.FirstOrDefault(x => x.ISBN == book.ISBN);
                 // the book already exist return info to page
@@ -99,9 +97,7 @@ namespace BookStore.Controllers
         {
             //check if model is valid
             if (ModelState.IsValid)
-            {
-                // create a new database connection
-                DB context = new DB();
+            {                
                 //try to fetch a book via Id
                 var currentBook = context.Books.FirstOrDefault(x => x.ISBN == book.ISBN);
                 // check if entered ISBN already exist and doesn't belong to book who should be updated
