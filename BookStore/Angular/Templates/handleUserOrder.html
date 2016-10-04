@@ -1,7 +1,7 @@
 ﻿<!-- handleUserOrder.html -->
 <h1>Handle user order</h1>
 
-<p>{{ message }}</p>
+<p class="pageInfo">{{ message }}</p>
 
  Date : {{today | date:'yyyy/MM/dd'}}
 <div ng-controller="handleUserOrderController as uohc" ng-repeat="userorder in userOrderHistory">
@@ -37,5 +37,6 @@
         <div class="col-xs-2">{{userorder.totalOrderAmount | currency : " SEK" : 2}}</div>
     </div>
     <br />
+    <font color="red"> {{statusMessage}} </font>
 </div>
 

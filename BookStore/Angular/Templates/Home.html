@@ -1,8 +1,8 @@
 ﻿<!-- home.html -->
-
 <h1>Home Page</h1>
 
-<p>{{ message }}</p>
+
+<p class="pageInfo">{{ message }}</p>
 
 <div ng-controller="mainController as main">
     <form ng-if="isLoggedIn && role == 'Admin'" class="form-horizontal" name="addBook" method="post" novalidate>
@@ -58,12 +58,12 @@
             <div class="col-xs-2">{{book.Price}}</div>
 
             <div class="col-xs-2">
-                <a href="#/" ng-if="role != 'Admin'" ng-click="main.addBookToCart(book.Id)">add to cart  </a> 
+                <a href="#/" ng-if="role != 'Admin'" ng-click="main.addBookToCart(book.Id)">add to cart  </a>
                 <a href="#/" ng-if="isLoggedIn && role == 'Admin'" ng-click="main.edit(book.Id)">| edit</a>
             </div>
         </div>
     </div>
-   
+
 </div>
 
 

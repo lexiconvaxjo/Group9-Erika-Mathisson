@@ -323,7 +323,10 @@
 
     //  main controller with $scope injected
     app.controller('mainController', function ($scope, $rootScope, bookFactory, $location, $window) {
-        $scope.message = 'This is the main page';
+       // $scope.message = 'This is the main page';
+
+        $scope.message = 'Welcome to the bookstore!';
+
         //setting books
         $scope.books = bookFactory.books;
         // book from ng-model
@@ -404,7 +407,7 @@
     //controller for handling registration
     app.controller('registerController', function ($scope, $window, bookFactory) {
         // message for the page
-        $scope.message = 'This is the register page!';
+        $scope.message = 'Please enter stated information in order to register!';
         // person from ng-model
         $scope.person = {};
 
@@ -426,7 +429,7 @@
     // controller for handling log in
     app.controller('loginController', function ($scope, $window, bookFactory, $rootScope, $timeout) {
         //message for log in page
-        $scope.message = 'This is the log in page';
+        $scope.message = 'Please enter username and password in order to log in';
         // person who will log in from ng-model
         var logInPerson = $scope.login;
 
@@ -468,7 +471,7 @@
     app.controller('cartController', function ($scope, bookFactory, $window, $timeout, $location) {
 
         //message for cart page
-        $scope.message = 'This is the cart page!';
+        $scope.message = 'Please choose checkout in order to make an order';
         //setting cart
         $scope.cart = bookFactory.cart;
 

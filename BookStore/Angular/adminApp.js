@@ -235,6 +235,7 @@
             console.log(deleteRow);
             return $http.post('/Order/RemoveRowFromOrder', deleteRow)
                .success(function (response) {
+                   console.log(response.status);
                    //row in an order removed ok
                    if (response.status === "Success") {
                        adminFactory.message = "Success";
@@ -258,9 +259,10 @@
                            }
                        }
                    }
-                   else {
+                   else if (response.status = "OrderToOld") {
                        // something went wrong, set message to page...
-                       adminFactory.message = "Something went wrong...";
+                       adminFactory.message = "The order/orderrow is to old and can't be deleted";
+                       console.log(adminFactory.message);
                    }
                })
                 // something went wrong when fetching orderhistory from backend
@@ -411,11 +413,13 @@
             adminFactory.deleteOrderRow(adminFactory.removeRow)
                .then(function () {
                    //check if any message is returned and set it to the status scope
+                   console.log(adminFactory.message);
                    if (adminFactory.message.length != 0) {
-                       if (adminFactory.message != "Success") {
+                       if (adminFactory.message == "Success") {
                            $scope.userOrderHistory = adminFactory.userOrderHistory;
                        }
                        else {
+                           console.log(adminFactory.message);
                            $scope.statusMessage = adminFactory.message;
                        }
                      

@@ -2,7 +2,7 @@
 
 <h1>Handle books Page</h1>
 
-<p>{{ message }}</p>
+<p class="pageInfo">{{ message }}</p>
 
 <div ng-controller="handleBooksController as hbc">   
     <form ng-if="isLoggedIn && role == 'Admin'" class="form-horizontal" name="addBook" method="post" novalidate>

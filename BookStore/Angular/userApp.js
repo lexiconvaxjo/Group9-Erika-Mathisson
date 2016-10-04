@@ -202,7 +202,7 @@
 
     //controller for listing a users myPages
     app.controller('myPagesController', function ($scope, $window, userFactory) {
-        $scope.message = 'This is the my pages page!';
+        $scope.message = 'Welcome to my pages!';
 
         //setting person to $scope
         $scope.myPerson = userFactory.myPerson;
@@ -235,7 +235,7 @@
     //controller for changeing a users password
     app.controller('changePassWordController', function ($scope, $window, userFactory) {
         //message for change password page
-        $scope.message = 'This is change password page';
+        $scope.message = 'Enter stated information in order to change password';
 
         // function for changing a users password
         this.changePassword = function () {
@@ -295,7 +295,7 @@
     // controller for receipt
     app.controller('receiptController', function ($scope, userFactory, $window, $timeout, $location) {
         //message for receipt page
-        $scope.message = 'This is the receipt page!';
+        $scope.message = 'Receipt for your current order!';
 
         //function for getting order
         userFactory.getOrder()
@@ -312,7 +312,7 @@
     //controller for order history
     app.controller('orderHistoryController', function ($scope, userFactory, $location) {
         //message for order history page
-        $scope.message = "This is order history page";
+        $scope.message = "List of previous orders";
 
         //function for getting order history
         userFactory.getOrderHistory().then(function () {

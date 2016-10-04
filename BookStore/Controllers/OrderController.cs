@@ -174,26 +174,36 @@ namespace BookStore.Controllers
         /// <param name="deleteRow">row that should be removed</param>
         /// <returns>Json</returns>
         public JsonResult RemoveRowFromOrder(DeleteRowViewModel deleteRow)
-        { 
-            // fetch the row that should be removed           
-            var rowToRemove = context.OrderRows.FirstOrDefault(x => x.Id == deleteRow.RowId);
-            // check so that the row isn't empty
-            if (rowToRemove != null)
+        {
+            // fetch the order whom the row is removed from
+            var orderRemove = context.Orders.Include("OrderRows").FirstOrDefault(x => x.Id == deleteRow.OrderId);
+            // add some days to orderdate in order to see if the orderrow is ok to delete
+            var dateInFuture = orderRemove.OrderDate.AddDays(4);
+            // check if the order row is ok to remove based on how old the order is
+            if (dateInFuture < DateTime.Now)
             {
-                // remove the row 
-                context.OrderRows.Remove(rowToRemove);
-                // fetch the order whom the row is removed from
-                var orderRemove = context.Orders.Include("OrderRows").FirstOrDefault(x => x.Id == deleteRow.OrderId);
-                // check if the order contains any more order rows, if not remove the actual order
-                if (orderRemove.OrderRows == null)
+                // fetch the row that should be removed           
+                var rowToRemove = context.OrderRows.FirstOrDefault(x => x.Id == deleteRow.RowId);
+                // check so that the row isn't empty
+                if (rowToRemove != null)
                 {
-                    context.Orders.Remove(orderRemove);
+                    // remove the row 
+                    context.OrderRows.Remove(rowToRemove);
+                    // check if the order contains any more order rows, if not remove the actual order
+                    if (orderRemove.OrderRows == null)
+                    {
+                        context.Orders.Remove(orderRemove);
+                    }
+                    // save the changes to the database
+                    context.SaveChanges();
                 }
-                // save the changes to the database
-                context.SaveChanges();
+                // return info to the page
+                return Json(new { status = "Success" });  
             }
-            // return info to the page
-            return Json(new { status = "Success" });
+            else
+            {
+                return Json(new { status = "OrderToOld" });
+            }            
         }
     }
 }

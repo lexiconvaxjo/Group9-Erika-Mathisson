@@ -2,13 +2,7 @@
 
 <h1>People</h1>
 
-<h1 ng-if="isLoggedIn && role == 'Admin'"> Logged in Admin</h1>
-<h1 ng-if="!isLoggedIn && role == 'Admin'"> Not Logged in Admin</h1>
-<h1 ng-if="!isLoggedIn && role == 'User'"> Not Logged in User</h1>
-<h1 ng-if="isLoggedIn && role == 'User'"> Logged in User</h1>
-
-
-<p>{{ message }}</p>
+<p class="pageInfo">{{ message }}</p>
 
 
 <div ng-controller="peopleController as pc">
